@@ -14,7 +14,7 @@ jobs:
     executor: node-executor
     steps:
       - checkout: 
-          path: ~/Frontend
+          # path: ~/Frontend
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json"}}
