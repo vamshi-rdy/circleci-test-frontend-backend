@@ -142,76 +142,7 @@ jobs:
       #       export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/session-token.json)     
       - run:
           name: Deploy to s3
-          command: aws s3 sync ./build s3://<<parameters.s3-bucket-name>> --delete              
-          
-# Orchestrate our job run sequence
-workflows:
-  frontendbuild_and_frontenddeploy:
-    jobs:
-      - install_dependencies
-      - frontendbuild:
-          name: build-dev
-          # env: $Build_ENV
-          context: aws-credential-dev
-          filters:
-            branches:
-              only: main
-          requires:
-            - install_dependencies
-      - frontenddeploy:
-          name: deploy-dev
-          requires:
-            - build-dev
-          context: aws-credentials-dev
-          s3-bucket-name: $devbucket
-          filters:
-            branches:
-              only: main
-      - build:
-          name: build-staging
-          # env: $Build_ENV2
-          context: aws-credential-staging
-          filters:
-            branches:
-              only: staging
-          requires:
-            - install_dependencies
-      - create_update_s3_bucket_staging:
-          requires:
-            - build-staging
-          context: aws-credentials-staging  
-          filters:
-            branches:
-              only: staging  
-      - deploy:
-          name: deploy-staging
-          requires:
-            - build-staging
-          context: aws-credentials-staging
-          s3-bucket-name: $stagingbucket
-          filters:
-            branches:
-              only: staging
-              
-              
-      # - build:
-      #     name: build-prod
-      #     env: prod
-      #     context: aws-credential-prod
-      #     filters:
-      #       branches:
-      #         only: prod
-      #     requires:
-      #       - install_dependencies
-      # - deploy:
-      #     name: deploy-prod
-      #     requires:
-      #       - build-prod
-      #     context: aws-credentials-prod
-      #     filters:
-      #       branches:
-      #         only: prod        
-  
+          command: aws s3 sync ./build s3://<<parameters.s3-bucket-name>> --delete               
  
   backendbuild:
     docker:
@@ -326,13 +257,80 @@ workflows:
                 --region $AWS_DEFAULT_REGION
             fi   
 
+
 workflows:
-  version: 2
-  testdeploy:
+  # Orchestrate our job run sequence
+  frontend and backend build and deploy:
     jobs:
+      - install_dependencies
+      - frontendbuild:
+          name: build-dev
+          # env: $Build_ENV
+          context: aws-credential-dev
+          filters:
+            branches:
+              only: main
+          requires:
+            - install_dependencies
+      - frontenddeploy:
+          name: deploy-dev
+          requires:
+            - build-dev
+          context: aws-credentials-dev
+          s3-bucket-name: $devbucket
+          filters:
+            branches:
+              only: main
+      - build:
+          name: build-staging
+          # env: $Build_ENV2
+          context: aws-credential-staging
+          filters:
+            branches:
+              only: staging
+          requires:
+            - install_dependencies
+      - create_update_s3_bucket_staging:
+          requires:
+            - build-staging
+          context: aws-credentials-staging  
+          filters:
+            branches:
+              only: staging  
+      - deploy:
+          name: deploy-staging
+          requires:
+            - build-staging
+          context: aws-credentials-staging
+          s3-bucket-name: $stagingbucket
+          filters:
+            branches:
+              only: staging
+              
+              
+      # - build:
+      #     name: build-prod
+      #     env: prod
+      #     context: aws-credential-prod
+      #     filters:
+      #       branches:
+      #         only: prod
+      #     requires:
+      #       - install_dependencies
+      # - deploy:
+      #     name: deploy-prod
+      #     requires:
+      #       - build-prod
+      #     context: aws-credentials-prod
+      #     filters:
+      #       branches:
+      #         only: prod
       - backendbuild:
           name: package lambda function
           context: aws-credential-dev
+          filters:
+            branches:
+              only: main
       - backenddeploy:
           name: deploy-lambdafunction
           requires:
