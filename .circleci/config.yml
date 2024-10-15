@@ -271,7 +271,7 @@ workflows:
             branches:
               only: main
           requires:
-            - install_dependencies
+            - frontend
       - frontenddeploy:
           name: deploy-dev
           requires:
