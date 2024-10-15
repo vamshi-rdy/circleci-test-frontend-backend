@@ -1,0 +1,345 @@
+version: 2.1
+# orbs:
+#   aws-s3: circleci/aws-s3@4.0.0 # use the AWS S3 orb in your configuration
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:22.7.0
+    resource_class: medium  
+    working_directory: ~/frontend # set the working directory  
+
+# Define the jobs we want to run for this project
+jobs:
+  frontend:
+    executor: node-executor
+    steps:
+      - checkout:
+          path: ~/Frontend
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json"}}
+            - v1-dependencies-
+      - run:
+          name: Install dependencies
+          command: | 
+            cd ~/Frontend
+            npm install
+      - save_cache:
+          paths:
+            - ~/Frontend/node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json"}}  
+
+  frontendbuild:
+    executor: node-executor
+    steps:
+      - checkout:
+          path: ~/Frontend
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json"}}
+            - v1-dependencies-
+      - run:
+          name: Build Project
+          command: |
+            cd ~/Frontend
+            npm run build
+      - run:
+          name: linux commands
+          command: |
+            pwd
+            ls
+            cd build
+            pwd
+            ls
+            cat index.html
+      - persist_to_workspace:
+          root: ~/frontend
+          paths:
+            - build
+      - store_artifacts:
+          path: build
+          destination: artifactbuild      
+  # test:
+  #   docker:
+  #     - image: cimg/base:2023.03
+  #   steps:
+  #     - checkout
+  #     - run: echo "this is the test job"
+  # create_update_s3_bucket_staging:
+  #   docker:
+  #     - image: cimg/python:3.8
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install AWS CLI
+  #         command: pip install awscli
+  #     - run:
+  #         name: update AWS CLI
+  #         command: pip install --upgrade awscli
+  #     - run:
+  #         name: configure AWS credentials
+  #         command: |
+  #           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+  #           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+  #           aws configure set default.region $AWS_DEFAULT_REGION 
+      # - run:
+      #     name: Refresh AWS credentials
+      #     command: |
+      #       aws sts get-session-token --duration-seconds 3600 > /tmp/session-token.json
+      #       export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' /tmp/session-token.json)
+      #       export AWS_SECRET_ACCESS_KEY_ID=$(jq -r '.Credentials.SecretAccessKey' /tmp/session-token.json)
+      #       export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/session-token.json)
+      # - run:
+      #     name: help text
+      #     command: |
+      #         aws help
+      #         aws cloudformation help
+      #         aws cloudformation deploy help
+      # - run:
+      #     name: Create/Update s3 bucket for staging
+      #     command: |
+            # aws cloudformation create-stack --template-file s3://cftemplates-bucketcreation/s3bucketcreation.yml --stack-name test --capabilities CAPABILITY_NAMED_IAM
+            # aws cloudformation deploy \ 
+              # --template-file s3://cftemplates-bucketcreation/s3bucketcreation.yml \
+              # --stack-name test \
+              # --capabilities CAPABILITY_NAMED_IAM
+
+  frontenddeploy:
+    docker:
+      - image: cimg/python:3.8
+    resource_class: medium  
+    parameters:
+      s3-bucket-name:
+        type: string
+    # environment:
+    #   AWS_ACCESS_KEY_ID: AKIA6ODU2ER5OENYVO5R
+    #   AWS_SECRET_ACCESS_KEY: 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
+    #   AWS_DEFAULT_REGION: ap-south-1
+    #   S3_BUCKET_NAME: assetbucketclient 
+    steps:
+      - checkout:
+          path: ~/Frontend
+      - attach_workspace:
+          at: ~/frontend
+      - run:
+          name: Install AWS CLI
+          command: pip install awscli
+      - run:
+          name: configure AWS credentials
+          command: |
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region $AWS_DEFAULT_REGION
+            # aws configure set aws_access_key_id $_accesskeyid	
+            # aws configure set aws_secret_access_key $secretkey
+            # aws configure set default.region $_defaultregion
+      - run:
+          name: Refresh AWS credentials
+          command: |
+            aws sts get-session-token --duration-seconds 3600 > /tmp/session-token.json
+            export AWS_ACCESS_KEY_ID=$(jq -r '.Credentials.AccessKeyId' /tmp/session-token.json)
+            export AWS_SECRET_ACCESS_KEY_ID=$(jq -r '.Credentials.SecretAccessKey' /tmp/session-token.json)
+            export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/session-token.json)     
+      - run:
+          name: Deploy to s3
+          command: aws s3 sync ./build s3://<<parameters.s3-bucket-name>> --delete              
+          
+# Orchestrate our job run sequence
+workflows:
+  frontendbuild_and_frontenddeploy:
+    jobs:
+      - install_dependencies
+      - frontendbuild:
+          name: build-dev
+          # env: $Build_ENV
+          context: aws-credential-dev
+          filters:
+            branches:
+              only: main
+          requires:
+            - install_dependencies
+      - frontenddeploy:
+          name: deploy-dev
+          requires:
+            - build-dev
+          context: aws-credentials-dev
+          s3-bucket-name: $devbucket
+          filters:
+            branches:
+              only: main
+      - build:
+          name: build-staging
+          # env: $Build_ENV2
+          context: aws-credential-staging
+          filters:
+            branches:
+              only: staging
+          requires:
+            - install_dependencies
+      - create_update_s3_bucket_staging:
+          requires:
+            - build-staging
+          context: aws-credentials-staging  
+          filters:
+            branches:
+              only: staging  
+      - deploy:
+          name: deploy-staging
+          requires:
+            - build-staging
+          context: aws-credentials-staging
+          s3-bucket-name: $stagingbucket
+          filters:
+            branches:
+              only: staging
+              
+              
+      # - build:
+      #     name: build-prod
+      #     env: prod
+      #     context: aws-credential-prod
+      #     filters:
+      #       branches:
+      #         only: prod
+      #     requires:
+      #       - install_dependencies
+      # - deploy:
+      #     name: deploy-prod
+      #     requires:
+      #       - build-prod
+      #     context: aws-credentials-prod
+      #     filters:
+      #       branches:
+      #         only: prod        
+  
+ 
+  backendbuild:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout:
+          path: ~/Backend
+      - run:
+          name: Install dependencies
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            # pip install -r requirements.txt
+            pip install awscli
+      - run:
+          name: package application
+          command: |
+            # . venv/bin/activate
+            zip function.zip Lambda.py
+            pwd
+            ls
+      - persist_to_workspace:
+          root: .
+          paths:
+            - function.zip      
+      - run:
+          name: Install AWS CLI
+          command: pip install awscli
+      - run:
+          name: configure AWS credentials
+          command: |
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region $AWS_DEFAULT_REGION
+      - run:
+          name: upload to s3
+          command: |
+            pwd
+            ls
+            aws s3 cp function.zip s3://lambdafunctionpackagedfile/function.zip
+            
+  backenddeploy:
+    docker:
+      - image: circleci/python:3.8
+    # parameters:
+    #   s3-bucket-name:
+    #     type: string
+    #     default: test-api-circleci
+    #   stack-name:
+    #     type: string
+    #     default: testapistack
+      
+    steps:
+      # - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Install AWS CLI
+          command: pip install awscli
+      # - run:
+      #     name: Install AWS SAM CLI
+      #     command: |
+      #       pip install aws-sam-cli
+      - run:
+          name: configure AWS credentials
+          command: |
+            # ROLE_ARN="arn:aws:iam::992382428282:role/dynamic-aws-credentials"
+            # echo role
+            # SESSION_NAME="circleci-session"
+            # echo sessionname
+            # TEMP_CREDENTIALS=$(aws sts assume-role --role-arn $ROLE_ARN --role-session-name $SESSION_NAME)
+            # echo temp
+            # export AWS_ACCESS_KEY_ID=$(echo $TEMP_CREDENTIALS | jq -r '.Credentials.AccessKeyId')
+            # echo accesskey
+            # export AWS_SECRET_ACCESS_KEY=$(echo $TEMP_CREDENTIALS | jq -r '.Credentials.SecretAccessKey')
+            # echo secretkey
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region $AWS_DEFAULT_REGION
+      - run:
+          name: verifying working directory
+          command: |
+            pwd
+            ls -la
+      - run:
+          name: Deploy lambda function
+          command: |
+            # zip function.zip Lambda.py     
+            pwd
+            ls
+            # if aws lambda get-function --function-name lambda_handler; then
+            #   aws lambda update-function-code --function-name lambda_handler --zip-file fileb://function.zip --region $AWS_DEFAULT_REGION
+            # else
+            #   aws lambda create-function --function-name lambda_handler \
+            #     --zip-file fileb://function.zip \
+            #     --handler lambda_function.lambda_handler \
+            #     --runtime python3.8 \
+            #     --role arn:aws:iam::992382428282:role/lambdadeploytest \
+            #     --region $AWS_DEFAULT_REGION
+            # fi
+            if aws lambda get-function --function-name lambda_handler; then
+               aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --s3-key function.zip --region $AWS_DEFAULT_REGION
+             # aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --region $AWS_DEFAULT_REGION
+            else
+              aws lambda create-function --function-name lambda_handler \
+                --zip-file fileb://function.zip \
+                --handler lambda_function.lambda_handler \
+                --runtime python3.8 \
+                --role arn:aws:iam::992382428282:role/lambdadeploytest \
+                # --code s3Bucket=lambdafunctionpackagedfile \
+                -- code S3Bucket=lambdafunctionpackagedfile, S3Key=function.zip \
+                --region $AWS_DEFAULT_REGION
+            fi   
+
+workflows:
+  version: 2
+  testdeploy:
+    jobs:
+      - backendbuild:
+          name: package lambda function
+          context: aws-credential-dev
+      - backenddeploy:
+          name: deploy-lambdafunction
+          requires:
+            - package lambda function
+          context: aws-credential-dev
+          filters:
+            branches:
+              only: main
+                                
+              
