@@ -262,7 +262,7 @@ workflows:
   # Orchestrate our job run sequence
   frontend and backend build and deploy:
     jobs:
-      - install_dependencies
+      - frontend
       - frontendbuild:
           name: build-dev
           # env: $Build_ENV
