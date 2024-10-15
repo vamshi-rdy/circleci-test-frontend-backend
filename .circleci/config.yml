@@ -17,17 +17,17 @@ jobs:
           path: ~/Frontend
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "Frontend/package-lock.json"}}
+            - v1-dependencies-{{ checksum "package-lock.json"}}
             - v1-dependencies-
       - run:
           name: Install dependencies
           command: | 
-            cd ~/Frontend
+            # cd ~/Frontend
             npm install
       - save_cache:
           paths:
-            - ~/Frontend/node_modules
-          key: v1-dependencies-{{ checksum "Frontend/package-lock.json"}}  
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json"}}  
 
   frontendbuild:
     executor: node-executor
