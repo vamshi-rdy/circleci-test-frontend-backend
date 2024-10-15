@@ -281,31 +281,31 @@ workflows:
           filters:
             branches:
               only: main
-      - build:
-          name: build-staging
-          # env: $Build_ENV2
-          context: aws-credential-staging
-          filters:
-            branches:
-              only: staging
-          requires:
-            - install_dependencies
-      - create_update_s3_bucket_staging:
-          requires:
-            - build-staging
-          context: aws-credentials-staging  
-          filters:
-            branches:
-              only: staging  
-      - deploy:
-          name: deploy-staging
-          requires:
-            - build-staging
-          context: aws-credentials-staging
-          s3-bucket-name: $stagingbucket
-          filters:
-            branches:
-              only: staging
+      # - build:
+      #     name: build-staging
+      #     # env: $Build_ENV2
+      #     context: aws-credential-staging
+      #     filters:
+      #       branches:
+      #         only: staging
+      #     requires:
+      #       - install_dependencies
+      # - create_update_s3_bucket_staging:
+      #     requires:
+      #       - build-staging
+      #     context: aws-credentials-staging  
+      #     filters:
+      #       branches:
+      #         only: staging  
+      # - deploy:
+      #     name: deploy-staging
+      #     requires:
+      #       - build-staging
+      #     context: aws-credentials-staging
+      #     s3-bucket-name: $stagingbucket
+          # filters:
+          #   branches:
+          #     only: staging
               
               
       # - build:
