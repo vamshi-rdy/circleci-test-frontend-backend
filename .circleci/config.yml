@@ -70,6 +70,8 @@ jobs:
           command: |
             pwd
             ls
+            cd Frontend
+            ls
             cd build
             pwd
             ls
