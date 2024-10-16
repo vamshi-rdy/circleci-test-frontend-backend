@@ -35,13 +35,19 @@ jobs:
       - save_cache:
           paths:
             - ~/Frontend/node_modules
-          key: v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}  
+          key: v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
+      - persist_to_workspace:
+          root: ~/Frontend
+          paths:
+            - node_modules    
 
   frontendbuild:
     executor: node-executor
     steps:
       - checkout:
           path: ~/Frontend
+      - attach_workspace:
+          at: ~/Frontend    
       - restore_cache:
           keys:
             - v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
@@ -69,7 +75,7 @@ jobs:
             ls
             cat index.html
       - persist_to_workspace:
-          root: .
+          root: ~/Frontend
           paths:
             - dist
       - store_artifacts:
