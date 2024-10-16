@@ -6,7 +6,7 @@ executors:
     docker:
       - image: cimg/node:22.7.0
     resource_class: medium  
-    working_directory: ~/project # set the working directory  
+    # working_directory: ~/project # set the working directory  
 
 # Define the jobs we want to run for this project
 jobs:
@@ -14,15 +14,17 @@ jobs:
     executor: node-executor
     steps:
       - checkout: 
-          path: ~/Frontend/
+          path: ~/Frontend
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package-lock.json"}}
-            - v1-dependencies-
+            - v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
+            - v1-frontend-dependencies-
       - run:
           name: Install dependencies
           command: |
-            ~/Frontend/
+            pwd
+            ls
+            cd ~/Frontend
             pwd
             ls
             npm install
@@ -30,22 +32,22 @@ jobs:
             ls
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json"}}  
+            - ~/Frontend/node_modules
+          key: v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}  
 
   frontendbuild:
     executor: node-executor
     steps:
       - checkout:
-          path: ~/Frontend/
+          path: ~/Frontend
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package-lock.json"}}
-            - v1-dependencies-
+            - v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
+            - v1-frontend-dependencies-
       - run:
           name: Build Project
           command: |
-            cd ~/Frontend/
+            cd ~/Frontend
             npm run build
       - run:
           name: linux commands
@@ -122,7 +124,7 @@ jobs:
     #   S3_BUCKET_NAME: assetbucketclient 
     steps:
       - checkout:
-          path: ~/Frontend/
+          path: ~/Frontend
       - attach_workspace:
           at: ~/project
       - run:
