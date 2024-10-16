@@ -52,6 +52,8 @@ jobs:
             cd ~/Frontend
             pwd
             ls
+            cd Frontend
+            ls
             npm run build
       - run:
           name: linux commands
