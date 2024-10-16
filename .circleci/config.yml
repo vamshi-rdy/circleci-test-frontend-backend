@@ -50,6 +50,8 @@ jobs:
           name: Build Project
           command: |
             cd ~/Frontend
+            pwd
+            ls
             npm run build
       - run:
           name: linux commands
