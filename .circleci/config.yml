@@ -277,7 +277,7 @@ workflows:
             branches:
               only: main
           requires:
-            - project
+            - frontend
       - frontenddeploy:
           name: deploy-dev
           requires:
