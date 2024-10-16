@@ -108,7 +108,7 @@ jobs:
               # --stack-name test \
               # --capabilities CAPABILITY_NAMED_IAM
 
-  projectdeploy:
+  frontenddeploy:
     docker:
       - image: cimg/python:3.8
     resource_class: medium  
