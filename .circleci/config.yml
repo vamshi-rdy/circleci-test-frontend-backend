@@ -37,7 +37,7 @@ jobs:
             - ~/Frontend/node_modules
           key: v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
       - persist_to_workspace:
-          root: ~/Frontend
+          root: ~/Frontend/Frontend
           paths:
             - node_modules    
 
