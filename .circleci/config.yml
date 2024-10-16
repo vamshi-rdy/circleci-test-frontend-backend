@@ -53,8 +53,12 @@ jobs:
             pwd
             ls
             cd Frontend
+            ls -a
+            pwd
             ls
             npm run build
+            pwd
+            ls
       - run:
           name: linux commands
           command: |
