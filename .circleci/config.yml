@@ -266,10 +266,10 @@ jobs:
 
 workflows:
   # Orchestrate our job run sequence
-  project and backend build and deploy:
+  frontend and backend build and deploy:
     jobs:
-      - project
-      - projectbuild:
+      - frontend
+      - frontendbuild:
           name: build-dev
           # env: $Build_ENV
           context: aws-credential-dev
@@ -278,7 +278,7 @@ workflows:
               only: main
           requires:
             - project
-      - projectdeploy:
+      - frontenddeploy:
           name: deploy-dev
           requires:
             - build-dev
