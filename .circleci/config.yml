@@ -23,10 +23,10 @@ jobs:
           name: Install dependencies
           command: |
             pwd
-            ls
+            ls -a
             cd ~/project
             pwd
-            ls
+            ls -l
             cd Frontend
             ls
             npm install
