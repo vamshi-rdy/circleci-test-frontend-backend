@@ -6,7 +6,7 @@ executors:
     docker:
       - image: cimg/node:22.7.0
     resource_class: medium  
-    # working_directory: ~/project # set the working directory  
+    working_directory: ~/Frontend # set the working directory  
 
 # Define the jobs we want to run for this project
 jobs:
