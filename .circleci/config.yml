@@ -24,9 +24,9 @@ jobs:
           command: |
             pwd
             ls
-            # cd ~/Frontend
-            # pwd
-            # ls
+            cd ~/Frontend
+            pwd
+            ls
             cd Frontend
             ls
             npm install
