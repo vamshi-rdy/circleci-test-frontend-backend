@@ -6,7 +6,7 @@ executors:
     docker:
       - image: cimg/node:22.7.0
     resource_class: medium  
-    working_directory: ~/frontend # set the working directory  
+    working_directory: ~/project # set the working directory  
 
 # Define the jobs we want to run for this project
 jobs:
@@ -37,7 +37,7 @@ jobs:
     executor: node-executor
     steps:
       - checkout:
-          path: ~/Frontend
+          path: ~/Frontend/
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json"}}
@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Build Project
           command: |
-            cd ~/Frontend
+            cd ~/Frontend/
             npm run build
       - run:
           name: linux commands
@@ -57,9 +57,9 @@ jobs:
             ls
             cat index.html
       - persist_to_workspace:
-          root: ~/frontend
+          root: .
           paths:
-            - build
+            - dist
       - store_artifacts:
           path: build
           destination: artifactbuild      
@@ -108,7 +108,7 @@ jobs:
               # --stack-name test \
               # --capabilities CAPABILITY_NAMED_IAM
 
-  frontenddeploy:
+  projectdeploy:
     docker:
       - image: cimg/python:3.8
     resource_class: medium  
@@ -122,9 +122,9 @@ jobs:
     #   S3_BUCKET_NAME: assetbucketclient 
     steps:
       - checkout:
-          path: ~/Frontend
+          path: ~/Frontend/
       - attach_workspace:
-          at: ~/frontend
+          at: ~/project
       - run:
           name: Install AWS CLI
           command: pip install awscli
@@ -266,10 +266,10 @@ jobs:
 
 workflows:
   # Orchestrate our job run sequence
-  frontend and backend build and deploy:
+  project and backend build and deploy:
     jobs:
-      - frontend
-      - frontendbuild:
+      - project
+      - projectbuild:
           name: build-dev
           # env: $Build_ENV
           context: aws-credential-dev
@@ -277,8 +277,8 @@ workflows:
             branches:
               only: main
           requires:
-            - frontend
-      - frontenddeploy:
+            - project
+      - projectdeploy:
           name: deploy-dev
           requires:
             - build-dev
