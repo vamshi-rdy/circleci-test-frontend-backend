@@ -24,7 +24,7 @@ jobs:
           command: |
             pwd
             ls
-            cd ~/Frontend
+            cd ~/project
             pwd
             ls
             cd Frontend
