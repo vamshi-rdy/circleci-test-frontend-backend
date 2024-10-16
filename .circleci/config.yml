@@ -77,7 +77,7 @@ jobs:
             ls
             cat index.html
       - persist_to_workspace:
-          root: ~/Frontend
+          root: ~/Frontend/Frontend
           paths:
             - dist
       - store_artifacts:
