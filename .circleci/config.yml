@@ -190,7 +190,7 @@ jobs:
             cd ~/Frontend
             pwd
             ls
-            cd Frontend
+            cd Backend
             pwd
             ls
             python -m venv venv
