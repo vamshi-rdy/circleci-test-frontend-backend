@@ -200,11 +200,11 @@ jobs:
             # . venv/bin/activate
             pwd
             ls
-            cd ~/Frontend
+            cd Backend
             pwd
             ls -a
-            cd Backend
-            ls
+            # cd Frontend
+            # ls
             zip function.zip Lambda.py
             pwd
             ls
