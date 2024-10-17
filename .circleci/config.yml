@@ -171,7 +171,10 @@ jobs:
       #       export AWS_SESSION_TOKEN=$(jq -r '.Credentials.SessionToken' /tmp/session-token.json)     
       - run:
           name: Deploy to s3
-          command: aws s3 sync ./build s3://<<parameters.s3-bucket-name>> --delete               
+          command: |
+            pwd
+            ls
+            aws s3 sync ./Frontend/Frontend/build s3://<<parameters.s3-bucket-name>> --delete               
  
   backendbuild:
     docker:
