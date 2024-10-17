@@ -213,7 +213,7 @@ jobs:
             pwd
             ls
       - persist_to_workspace:
-          root: .
+          root: ~/Frontend/Backend
           paths:
             - function.zip      
       - run:
