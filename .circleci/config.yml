@@ -174,7 +174,7 @@ jobs:
           command: |
             pwd
             ls
-            aws s3 sync ./Frontend/Frontend/build s3://<<parameters.s3-bucket-name>> --delete               
+            aws s3 sync ~/Frontend/build s3://<<parameters.s3-bucket-name>> --delete               
  
   backendbuild:
     docker:
