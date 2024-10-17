@@ -82,7 +82,7 @@ jobs:
             - build
       - store_artifacts:
           path: build
-          destination: artifactbuild      
+          destination: frontendbuild      
   # test:
   #   docker:
   #     - image: cimg/base:2023.03
@@ -307,7 +307,7 @@ workflows:
           name: deploy-dev
           requires:
             - build-dev
-          context: aws-credentials-dev
+          context: aws-credential-dev
           s3-bucket-name: $devbucket
           filters:
             branches:
