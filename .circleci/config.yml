@@ -230,7 +230,7 @@ jobs:
           command: |
             pwd
             ls
-            aws s3 cp ~/Backend/function.zip s3://lambdafunctionpackagedfile/function.zip
+            aws s3 cp ~/Frontend/Backend/function.zip s3://lambdafunctionpackagedfile/function.zip
             pwd
             ls -a
             
