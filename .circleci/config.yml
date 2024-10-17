@@ -181,13 +181,16 @@ jobs:
       - image: circleci/python:3.8
     steps:
       - checkout:
-          path: ~/Backend
+          path: ~/Frontend
       - run:
           name: Install dependencies
           command: |
             pwd
             ls -a
             cd ~/Frontend
+            pwd
+            ls
+            cd Frontend
             pwd
             ls
             python -m venv venv
@@ -200,11 +203,12 @@ jobs:
             # . venv/bin/activate
             pwd
             ls
-            cd Backend
+            cd ~/Frontend
             pwd
             ls -a
-            # cd Frontend
-            # ls
+            cd Backend
+            pwd
+            ls
             zip function.zip Lambda.py
             pwd
             ls
