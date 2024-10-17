@@ -297,7 +297,7 @@ workflows:
   frontend_workflow:
     when:
       and:
-        - equal: ["dev", << pipeline.git.branch >>]
+        - equal: ["main", << pipeline.git.branch >>]
         - changeset:
             paths:
               - Frontend/**
@@ -368,7 +368,7 @@ workflows:
   backend_workflow: 
     when:
       and:
-        - equal: ["dev", << pipeline.git.branch >>]
+        - equal: ["main", << pipeline.git.branch >>]
         - changeset:
             paths:
               - Backend/**
