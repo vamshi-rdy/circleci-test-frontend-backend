@@ -296,10 +296,10 @@ jobs:
             #     --role arn:aws:iam::992382428282:role/lambdadeploytest \
             #     --region $AWS_DEFAULT_REGION
             # fi
-            if aws lambda get-function --function-name lambda_handler; then
-               aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --s3-key function.zip --region $AWS_DEFAULT_REGION
-             # aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --region $AWS_DEFAULT_REGION
-            else
+            # if aws lambda get-function --function-name lambda_handler; then
+            #    aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --s3-key function.zip --region $AWS_DEFAULT_REGION
+            #  # aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --region $AWS_DEFAULT_REGION
+            # else
               aws lambda create-function --function-name lambda_handler \
                 --zip-file fileb://function.zip \
                 --handler lambda_function.lambda_handler \
@@ -308,7 +308,7 @@ jobs:
                 # --code s3Bucket=lambdafunctionpackagedfile \
                 -- code S3Bucket=lambdafunctionpackagedfile, S3Key=function.zip \
                 --region $AWS_DEFAULT_REGION
-            fi   
+            # fi   
 
 
 workflows:
