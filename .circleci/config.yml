@@ -295,7 +295,7 @@ jobs:
             #     --runtime python3.8 \
             #     --role arn:aws:iam::992382428282:role/lambdadeploytest \
             #     --region $AWS_DEFAULT_REGION
-            fi
+            # fi
             if aws lambda get-function --function-name lambda_handler; then
                aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --s3-key function.zip --region $AWS_DEFAULT_REGION
              # aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --region $AWS_DEFAULT_REGION
