@@ -336,7 +336,7 @@ workflows:
           requires:
             - build-dev
           context: aws-credential-dev
-          s3-bucket-name: $devbucket
+          s3_bucket_name: $devbucket
           filters:
             branches:
               only: main
