@@ -133,7 +133,7 @@ jobs:
       - image: cimg/python:3.8
     resource_class: medium  
     parameters:
-      s3-bucket-name:
+      s3_bucket_name:
         type: string
     # environment:
     #   AWS_ACCESS_KEY_ID: AKIA6ODU2ER5OENYVO5R
@@ -174,7 +174,7 @@ jobs:
           command: |
             pwd
             ls
-            aws s3 sync ~/Frontend/build s3://<<parameters.s3-bucket-name>> --delete               
+            aws s3 sync ~/Frontend/build s3://<<parameters.s3_bucket_name>> --delete               
  
   backendbuild:
     docker:
@@ -230,7 +230,7 @@ jobs:
           command: |
             pwd
             ls
-            aws s3 cp ~/Frontend/Backend/function.zip s3://lambdafunctionpackagedfile/function.zip
+            aws s3 cp ~/Frontend/Backend/function.zip s3://lambdapackagedeploy/function.zip
             pwd
             ls -a
             
@@ -295,20 +295,20 @@ jobs:
             #     --runtime python3.8 \
             #     --role arn:aws:iam::992382428282:role/lambdadeploytest \
             #     --region $AWS_DEFAULT_REGION
-            # fi
-            # if aws lambda get-function --function-name lambda_handler; then
-            #    aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --s3-key function.zip --region $AWS_DEFAULT_REGION
-            #  # aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --region $AWS_DEFAULT_REGION
-            # else
+            fi
+            if aws lambda get-function --function-name lambda_handler; then
+               aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --s3-key function.zip --region $AWS_DEFAULT_REGION
+             # aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdafunctionpackagedfile --region $AWS_DEFAULT_REGION
+            else
               aws lambda create-function --function-name lambda_handler \
                 --zip-file fileb://function.zip \
                 --handler lambda_function.lambda_handler \
                 --runtime python3.8 \
                 --role arn:aws:iam::992382428282:role/lambdadeploytest \
-                # --code s3Bucket=lambdafunctionpackagedfile \
-                -- code S3Bucket=lambdafunctionpackagedfile, S3Key=function.zip \
+                # --code s3Bucket=lambdapackagedeploy \
+                -- code S3Bucket=lambdapackagedeploy, S3Key=function.zip \
                 --region $AWS_DEFAULT_REGION
-            # fi   
+            fi   
 
 
 workflows:
