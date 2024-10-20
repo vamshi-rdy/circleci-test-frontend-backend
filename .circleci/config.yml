@@ -304,7 +304,7 @@ jobs:
                 --zip-file fileb://function.zip \
                 --handler lambda_function.lambda_handler \
                 --runtime python3.8 \
-                --role arn:aws:iam::992382428282:role/lambdadeploytest \
+                --role arn:aws:iam::216989128744:role/lambdadeploytest \
                 # --code s3Bucket=lambdapackagedeploy \
                 -- code S3Bucket=lambdapackagedeploy, S3Key=function.zip \
                 --region $AWS_DEFAULT_REGION
