@@ -319,28 +319,28 @@ jobs:
 workflows:
   # Orchestrate our job run sequence
   frontend_workflow:
-    # when:
-    #   and:
-    #     - equal: ["main", << pipeline.git.branch >>]
-    #     - changeset:
-    #         paths:
-    #           - Frontend/**
+    when:
+      and:
+        - equal: ["main", << pipeline.git.branch >>]
+        - changeset:
+            paths:
+              - Frontend
     jobs:
       - frontend:
-          filters:
-            branches:
-              only: main
-            tags:
-              only: Frontend/**  
+          # filters:
+          #   branches:
+          #     only: main
+          #   tags:
+          #     only: Frontend/**  
       - frontendbuild:
           name: build-dev
           # env: $Build_ENV
           context: aws-credential-dev
-          filters:
-            branches:
-              only: main
-            tags:
-              only: Frontend/**  
+          # filters:
+          #   branches:
+          #     only: main
+          #   tags:
+          #     only: Frontend/**  
           requires:
             - frontend
       - frontenddeploy:
@@ -349,11 +349,11 @@ workflows:
             - build-dev
           context: aws-credential-dev
           s3_bucket_name: $devbucket
-          filters:
-            branches:
-              only: main
-            tags:
-              only: Frontend/**  
+          # filters:
+          #   branches:
+          #     only: main
+          #   tags:
+          #     only: Frontend/**  
       # - build:
       #     name: build-staging
       #     # env: $Build_ENV2
@@ -404,7 +404,7 @@ workflows:
         - equal: ["main", << pipeline.git.branch >>]
         - changeset:
             paths:
-              - Backend/**
+              - Backend/
     jobs:        
       - backendbuild:
           name: package lambda function
