@@ -315,21 +315,28 @@ jobs:
 workflows:
   # Orchestrate our job run sequence
   frontend_workflow:
-    when:
-      and:
-        - equal: ["main", << pipeline.git.branch >>]
-        - changeset:
-            paths:
-              - Frontend/**
+    # when:
+    #   and:
+    #     - equal: ["main", << pipeline.git.branch >>]
+    #     - changeset:
+    #         paths:
+    #           - Frontend/**
     jobs:
-      - frontend
+      - frontend:
+          filters:
+            branches:
+              only: main
+            paths:
+              only: Frontend/**  
       - frontendbuild:
           name: build-dev
           # env: $Build_ENV
           context: aws-credential-dev
-          # filters:
-          #   branches:
-          #     only: main
+          filters:
+            branches:
+              only: main
+            paths:
+              only: Frontend/**  
           requires:
             - frontend
       - frontenddeploy:
@@ -338,9 +345,11 @@ workflows:
             - build-dev
           context: aws-credential-dev
           s3_bucket_name: $devbucket
-          # filters:
-          #   branches:
-          #     only: main
+          filters:
+            branches:
+              only: main
+            paths:
+              only: Frontend/**  
       # - build:
       #     name: build-staging
       #     # env: $Build_ENV2
@@ -386,26 +395,30 @@ workflows:
       #       branches:
       #         only: prod
   backend_workflow: 
-    when:
-      and:
-        - equal: ["main", << pipeline.git.branch >>]
-        - changeset:
-            paths:
-              - Backend/**
+    # when:
+    #   and:
+    #     - equal: ["main", << pipeline.git.branch >>]
+    #     - changeset:
+    #         paths:
+    #           - Backend/**
     jobs:        
       - backendbuild:
           name: package lambda function
           context: aws-credential-dev
-          # filters:
-          #   branches:
-          #     only: main
+          filters:
+            branches:
+              only: main
+            paths:
+              only: Backend/**  
       - backenddeploy:
           name: deploy-lambdafunction
           requires:
             - package lambda function
           context: aws-credential-dev
-          # filters:
-          #   branches:
-          #     only: main
+          filters:
+            branches:
+              only: main
+            paths:
+              only: Backend/**
                                 
               
