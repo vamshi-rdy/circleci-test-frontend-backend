@@ -324,14 +324,9 @@ workflows:
         - equal: ["main", << pipeline.git.branch >>]
         - changeset:
             paths:
-              - Frontend
+              - Frontend/
     jobs:
-      - frontend:
-          # filters:
-          #   branches:
-          #     only: main
-          #   tags:
-          #     only: Frontend/**  
+      - frontend: 
       - frontendbuild:
           name: build-dev
           # env: $Build_ENV
