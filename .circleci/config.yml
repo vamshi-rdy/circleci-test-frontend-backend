@@ -326,7 +326,7 @@ workflows:
           filters:
             branches:
               only: main
-            paths:
+            tags:
               only: Frontend/**  
       - frontendbuild:
           name: build-dev
@@ -335,7 +335,7 @@ workflows:
           filters:
             branches:
               only: main
-            paths:
+            tags:
               only: Frontend/**  
           requires:
             - frontend
@@ -348,7 +348,7 @@ workflows:
           filters:
             branches:
               only: main
-            paths:
+            tags:
               only: Frontend/**  
       # - build:
       #     name: build-staging
@@ -408,7 +408,7 @@ workflows:
           filters:
             branches:
               only: main
-            paths:
+            tags:
               only: Backend/**  
       - backenddeploy:
           name: deploy-lambdafunction
@@ -418,7 +418,7 @@ workflows:
           filters:
             branches:
               only: main
-            paths:
+            tags:
               only: Backend/**
                                 
               
