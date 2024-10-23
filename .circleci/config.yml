@@ -324,7 +324,7 @@ workflows:
         - equal: ["main", << pipeline.git.branch >>]
         - changeset:
             paths:
-              - Frontend/
+              - Frontend/**
     jobs:
       - frontend: 
       - frontendbuild:
@@ -399,7 +399,7 @@ workflows:
         - equal: ["main", << pipeline.git.branch >>]
         - changeset:
             paths:
-              - Backend/
+              - Backend/**
     jobs:        
       - backendbuild:
           name: package lambda function
