@@ -1,8 +1,8 @@
 version: 2.1
-# parameters:
-#   git.branch:
-#     type: string
-#     default: main
+parameters:
+  git.branch:
+    type: string
+    default: main
 # orbs:
 #   aws-s3: circleci/aws-s3@4.0.0 # use the AWS S3 orb in your configuration
 executors:
@@ -326,7 +326,12 @@ workflows:
     #         paths:
     #           - Frontend/**
     jobs:
-      - frontend: 
+      - frontend:
+          filters:
+            branches:
+              only: main
+            tags:
+              only: Frontend/**  
       - frontendbuild:
           name: build-dev
           # env: $Build_ENV
@@ -394,30 +399,30 @@ workflows:
       #       branches:
       #         only: prod
   backend_workflow: 
-    # when:
-    #   and:
-    #     - equal: ["main", << pipeline.git.branch >>]
-    #     - changeset:
-    #         paths:
-    #           - Backend/**
+    when:
+      and:
+        - equal: ["main", << pipeline.git.branch >>]
+        - changeset:
+            paths:
+              - Backend/**
     jobs:        
       - backendbuild:
           name: package lambda function
           context: aws-credential-dev
-          filters:
-            branches:
-              only: main
-            tags:
-              only: Backend/**  
+          # filters:
+          #   branches:
+          #     only: main
+          #   tags:
+          #     only: Backend/**  
       - backenddeploy:
           name: deploy-lambdafunction
           requires:
             - package lambda function
           context: aws-credential-dev
-          filters:
-            branches:
-              only: main
-            tags:
-              only: Backend/**
+          # filters:
+          #   branches:
+          #     only: main
+          #   tags:
+          #     only: Backend/**
                                 
               
