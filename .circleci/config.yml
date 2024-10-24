@@ -295,7 +295,7 @@ jobs:
             # zip function.zip Lambda.py     
             pwd
             ls
-            cd ~/Frontend
+            # cd ~/Frontend
             pwd
             ls
             # if aws lambda get-function --function-name lambda_handler; then
