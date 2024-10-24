@@ -31,8 +31,8 @@ jobs:
             # cd ~/project
             # pwd
             # ls -l
-            cd Frontend
-            ls
+            # cd Frontend
+            # ls
             npm install
             pwd
             ls
