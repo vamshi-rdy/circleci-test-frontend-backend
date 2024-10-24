@@ -10,7 +10,12 @@ executors:
     docker:
       - image: cimg/node:22.7.0
     resource_class: medium  
-    working_directory: ~/UI # set the working directory  
+    working_directory: ~/UI # set the working directory
+    
+  python-executor:
+    docker:
+      - image: cimg/node:3.9
+    working_directory: ~/BKend  
 
 # Define the jobs we want to run for this project
 jobs:
@@ -187,18 +192,19 @@ jobs:
       - image: circleci/python:3.8
     steps:
       - checkout:
-          path: ~/Frontend
+          path: ~/Bkend
       - run:
           name: Install dependencies
           command: |
             pwd
             ls -a
-            cd ~/project
-            pwd
-            ls
-            cd Backend
-            pwd
-            ls
+            # cd ~/project
+            # pwd
+            # ls
+            # cd Backend
+            # pwd
+            # ls
+            cd ~/Bkend/Backend
             python -m venv venv
             . venv/bin/activate
             # pip install -r requirements.txt
@@ -212,14 +218,14 @@ jobs:
             cd ~/project
             pwd
             ls -a
-            cd Backend
+            cd ~/Bkend/Backend
             pwd
             ls
             zip function.zip Lambda.py
             pwd
             ls
       - persist_to_workspace:
-          root: ~/project/Backend
+          root: ~/Bkend/Backend
           paths:
             - function.zip      
       - run:
@@ -236,7 +242,7 @@ jobs:
           command: |
             pwd
             ls
-            aws s3 cp ~/Frontend/Backend/function.zip s3://lambdapackagedeploy/function.zip
+            aws s3 cp ~/Bkend/Backend/function.zip s3://lambdapackagedeploy/function.zip
             pwd
             ls -a
             
@@ -254,7 +260,7 @@ jobs:
     steps:
       # - checkout
       - attach_workspace:
-          at: ~/project
+          at: ~/Bkend/Backend
       - run:
           name: Install AWS CLI
           command: pip install awscli
