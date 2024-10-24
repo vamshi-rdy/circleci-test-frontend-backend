@@ -21,7 +21,7 @@ jobs:
           path: ~/Frontend
       - restore_cache:
           keys:
-            - v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
+            - v1-frontend-dependencies-{{ checksum "project/package-lock.json"}}
             - v1-frontend-dependencies-
       - run:
           name: Install dependencies
