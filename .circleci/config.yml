@@ -10,7 +10,7 @@ executors:
     docker:
       - image: cimg/node:22.7.0
     resource_class: medium  
-    working_directory: ~/Frontend # set the working directory  
+    working_directory: ~/project # set the working directory  
 
 # Define the jobs we want to run for this project
 jobs:
@@ -28,7 +28,7 @@ jobs:
           command: |
             pwd
             ls -a
-            cd ~/Frontend
+            cd ~/project
             pwd
             ls -l
             cd Frontend
@@ -41,7 +41,7 @@ jobs:
             - ~/Frontend/node_modules
           key: v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
       - persist_to_workspace:
-          root: ~/Frontend/Frontend
+          root: ~/project/Frontend
           paths:
             - node_modules    
 
@@ -51,7 +51,7 @@ jobs:
       - checkout:
           path: ~/Frontend
       - attach_workspace:
-          at: ~/Frontend    
+          at: ~/project    
       - restore_cache:
           keys:
             - v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Build Project
           command: |
-            cd ~/Frontend
+            cd ~/project
             pwd
             ls
             cd Frontend
@@ -81,7 +81,7 @@ jobs:
             ls
             cat index.html
       - persist_to_workspace:
-          root: ~/Frontend/Frontend
+          root: ~/project/Frontend
           paths:
             - build
       - store_artifacts:
@@ -148,7 +148,7 @@ jobs:
       - checkout:
           path: ~/Frontend
       - attach_workspace:
-          at: ~/Frontend    
+          at: ~/project    
       - run:
           name: Install AWS CLI
           command: |
@@ -191,7 +191,7 @@ jobs:
           command: |
             pwd
             ls -a
-            cd ~/Frontend
+            cd ~/project
             pwd
             ls
             cd Backend
@@ -207,7 +207,7 @@ jobs:
             # . venv/bin/activate
             pwd
             ls
-            cd ~/Frontend
+            cd ~/project
             pwd
             ls -a
             cd Backend
@@ -217,7 +217,7 @@ jobs:
             pwd
             ls
       - persist_to_workspace:
-          root: ~/Frontend/Backend
+          root: ~/project/Backend
           paths:
             - function.zip      
       - run:
@@ -252,7 +252,7 @@ jobs:
     steps:
       # - checkout
       - attach_workspace:
-          at: ~/Frontend
+          at: ~/project
       - run:
           name: Install AWS CLI
           command: pip install awscli
