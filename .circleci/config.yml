@@ -10,7 +10,7 @@ executors:
     docker:
       - image: cimg/node:22.7.0
     resource_class: medium  
-    working_directory: ~/project # set the working directory  
+    working_directory: ~/UI # set the working directory  
 
 # Define the jobs we want to run for this project
 jobs:
@@ -18,10 +18,10 @@ jobs:
     executor: node-executor
     steps:
       - checkout: 
-          path: ~/Frontend
+          path: ~/UI
       - restore_cache:
           keys:
-            - v1-frontend-dependencies-{{ checksum "package-lock.json"}}
+            - v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
             - v1-frontend-dependencies-
       - run:
           name: Install dependencies
@@ -33,15 +33,16 @@ jobs:
             # ls -l
             # cd Frontend
             # ls
+            cd ~/UI/Frontend
             npm install
             pwd
             ls
       - save_cache:
           paths:
-            - ~/Frontend/node_modules
+            - ~/UI/Frontend/node_modules
           key: v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
       - persist_to_workspace:
-          root: ~/project/Frontend
+          root: ~/UI/Frontend
           paths:
             - node_modules    
 
@@ -49,9 +50,9 @@ jobs:
     executor: node-executor
     steps:
       - checkout:
-          path: ~/Frontend
+          path: ~/UI
       - attach_workspace:
-          at: ~/project    
+          at: ~/UI/Frontend   
       - restore_cache:
           keys:
             - v1-frontend-dependencies-{{ checksum "Frontend/package-lock.json"}}
@@ -59,33 +60,34 @@ jobs:
       - run:
           name: Build Project
           command: |
-            cd ~/project
+            # cd ~/project
+            # pwd
+            # ls
+            # cd Frontend
+            # ls -a
             pwd
             ls
-            cd Frontend
-            ls -a
-            pwd
-            ls
+            cd ~/UI/Frontend
             npm run build
             pwd
             ls
-      - run:
-          name: linux commands
-          command: |
-            pwd
-            ls
-            cd Frontend
-            ls
-            cd build
-            pwd
-            ls
-            cat index.html
+      # - run:
+      #     name: linux commands
+      #     command: |
+      #       pwd
+      #       ls
+      #       cd Frontend
+      #       ls
+      #       cd build
+      #       pwd
+      #       ls
+      #       cat index.html
       - persist_to_workspace:
-          root: ~/project/Frontend
+          root: ~/UI/Frontend
           paths:
             - build
       - store_artifacts:
-          path: build
+          path: ~/UI/Frontend/build
           destination: frontendbuild      
   # test:
   #   docker:
@@ -146,9 +148,9 @@ jobs:
     #   S3_BUCKET_NAME: assetbucketclient 
     steps:
       - checkout:
-          path: ~/Frontend
+          path: ~/UI
       - attach_workspace:
-          at: ~/project    
+          at: ~/UI/Frontend    
       - run:
           name: Install AWS CLI
           command: |
@@ -178,7 +180,7 @@ jobs:
           command: |
             pwd
             ls
-            aws s3 sync ~/Frontend/build s3://<<parameters.s3_bucket_name>> --delete               
+            aws s3 sync ~/UI/Frontend/build s3://<<parameters.s3_bucket_name>> --delete               
  
   backendbuild:
     docker:
