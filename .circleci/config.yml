@@ -338,8 +338,9 @@ workflows:
           filters:
             branches:
               only: main
-            ignore:
-              - Backend/**  
+            tags:
+              ignore:
+                - Backend/**   
       - frontendbuild:
           name: build-dev
           # env: $Build_ENV
@@ -347,8 +348,9 @@ workflows:
           filters:
             branches:
               only: main
-            ignore:
-              - Backend/**  
+            tags:
+              ignore:
+                - Backend/**  
           requires:
             - frontend
       - frontenddeploy:
@@ -360,8 +362,9 @@ workflows:
           filters:
             branches:
               only: main
-            ignore:
-              - Backend/**  
+            tags:
+              ignore:
+                - Backend/**  
       # - build:
       #     name: build-staging
       #     # env: $Build_ENV2
