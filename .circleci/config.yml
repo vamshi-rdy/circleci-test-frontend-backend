@@ -421,7 +421,7 @@ workflows:
             branches:
               only: main
             tags:
-              only: Backend/**  
+              ignore: Frontend/**  
       - backenddeploy:
           name: deploy-lambdafunction
           requires:
@@ -431,6 +431,6 @@ workflows:
             branches:
               only: main
             tags:
-              only: Backend/**
+              ignore: Frontend/**
                                 
               
