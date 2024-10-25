@@ -4,7 +4,7 @@ import json
 def lambda_handler(event, context):
     json_region = os.environ['AWS_REGION']
     return {
-        "statusCode": 201,
+        "statusCode": 202,
         "headers": {
             "Content-Type": "application/json"
         },
