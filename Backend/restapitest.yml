@@ -1,0 +1,179 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  StageName:
+    Type: String
+    Default: v1
+    Description: Name of API stage.
+Resources:
+  Api:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: ReqValidatorsSample
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: My Rest API
+      Name: MyApi    
+  RequestBodyModelId:
+    Type: 'AWS::ApiGateway::Model'
+    Properties:
+      RestApiId: !Ref Api
+      ContentType: application/json
+      Description: Request body model for Pet ID.
+      Schema:
+        $schema: 'http://json-schema.org/draft-04/schema#'
+        title: RequestBodyModelId
+        properties:
+            id:
+              type: integer
+  RequestBodyModel: 
+    Type: 'AWS::ApiGateway::Model'
+    Properties:
+      RestApiId: !Ref Api
+      ContentType: application/json
+      Description: Request body model for Pet type, name, price, and ID.
+      Schema:
+        $schema: 'http://json-schema.org/draft-04/schema#'
+        title: RequestBodyModel
+        required:
+          - price
+          - name
+          - type
+        type: object
+        properties:
+            id:
+              "$ref": !Sub 
+                - 'https://apigateway.amazonaws.com/restapis/${Api}/models/${RequestBodyModelId}'
+                - Api: !Ref Api
+                  RequestBodyModelId: !Ref RequestBodyModelId
+            price: 
+              type: number
+              minimum: 26
+              maximum: 500
+            name:
+              type: string
+            type:
+              type: string
+              enum:
+                - "dog"
+                - "cat"
+                - "fish"
+  GETValidator:
+    Type: AWS::ApiGateway::RequestValidator
+    Properties:
+      Name: params-only
+      RestApiId: !Ref Api
+      ValidateRequestBody: False
+      ValidateRequestParameters: True 
+  POSTValidator:
+    Type: AWS::ApiGateway::RequestValidator
+    Properties:
+      Name: body-only
+      RestApiId: !Ref Api
+      ValidateRequestBody: True
+      ValidateRequestParameters: False
+  ValidationResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref Api
+      ParentId: !GetAtt Api.RootResourceId
+      PathPart: 'validation'
+  ValidationMethodGet:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      RestApiId: !Ref Api
+      ResourceId: !Ref ValidationResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      RequestValidatorId: !Ref GETValidator
+      RequestParameters:
+        method.request.querystring.q1: true
+      Integration:
+        Type: HTTP_PROXY
+        IntegrationHttpMethod: GET
+        Uri: http://petstore-demo-endpoint.execute-api.com/petstore/pets/
+  ValidationMethodPost:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      RestApiId: !Ref Api
+      ResourceId: !Ref ValidationResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      RequestValidatorId: !Ref POSTValidator
+      RequestModels:
+        application/json : !Ref RequestBodyModel 
+      Integration:
+        Type: HTTP_PROXY
+        IntegrationHttpMethod: POST
+        Uri: http://petstore-demo-endpoint.execute-api.com/petstore/pets/
+  ApiDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    DependsOn:
+      - ValidationMethodGet
+      - RequestBodyModel 
+    Properties:
+      RestApiId: !Ref Api
+      StageName: !Sub '${StageName}'
+      
+  # CloudFormation creates a lambda function named <CloudFormationStackName-ResourceName-RandomChars>
+  # Example: CreateLambdaFunction-TestLambdaFunction-N7S3FMXJ8Z8R
+  TestLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: "test-api-circleci2"
+        S3Key: "packaged.yml"
+      Handler: Lambda.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: python3.12
+      # Tags:
+      # -
+      #   Key: "Documentation"
+      #   Value: "Docbot"
+
+  # Creates an execution role called <CloudFormationStackName-ResourceName-RandomChars>
+  # Example: CreateLambdaFunction-LambdaExecutionRole-1TWFONVJX3VZQ
+  # The execution role is assigned to the lambda function
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - "sts:AssumeRole"
+      Path: "/"
+      # Create a policy attached to the role
+      # Allow Cloudwatch logging
+      Policies:
+      - PolicyName: "AllowLogging"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - logs:*
+            - s3:GetObject
+            Resource: 
+              - arn:aws:logs:*:*:*
+              - arn:aws:s3:::test-api-circleci2/*
+            
+
+  # Permission for API Gateway endpoint to call TestLambdaFunction
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !GetAtt
+        - TestLambdaFunction
+        - Arn
+      Principal: apigateway.amazonaws.com    
+Outputs:
+  ApiRootUrl:
+    Description: Root Url of the API
+    Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${StageName}'
+    
