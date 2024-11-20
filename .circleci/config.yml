@@ -258,7 +258,8 @@ jobs:
     #     default: testapistack
       
     steps:
-      # - checkout
+      - checkout:
+          path: ~/Bkend  
       # - attach_workspace:
       #     at: ~/Bkend/Backend
       - run:
