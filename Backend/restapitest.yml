@@ -120,6 +120,7 @@ Resources:
   TestLambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
+      FunctionName: lambda_handler2
       Code:
         S3Bucket: "test-api-circleci2"
         S3Key: "packaged.yml"
@@ -146,6 +147,7 @@ Resources:
             - lambda.amazonaws.com
           Action:
           - "sts:AssumeRole"
+      RoleName: backendiamrole    
       Path: "/"
       # Create a policy attached to the role
       # Allow Cloudwatch logging
