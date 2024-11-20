@@ -329,7 +329,7 @@ jobs:
             # fi
             cd ~/Bkend/Backend
             sam package --template-file restapitest.yml --output-template-file packaged.yml --s3-bucket lambdapackagedeploy
-            sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM
+            sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
 
 
 workflows:
