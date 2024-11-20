@@ -263,10 +263,13 @@ jobs:
       #     at: ~/Bkend/Backend
       - run:
           name: Install AWS CLI
-          command: pip install awscli
+          command: |
+            cd ~/Bkend/Backend
+            pip install awscli
       - run:
           name: Install AWS SAM CLI
           command: |
+            cd ~/Bkend/Backend
             pip install aws-sam-cli
       - run:
           name: configure AWS credentials
@@ -281,6 +284,7 @@ jobs:
             # echo accesskey
             # export AWS_SECRET_ACCESS_KEY=$(echo $TEMP_CREDENTIALS | jq -r '.Credentials.SecretAccessKey')
             # echo secretkey
+            cd ~/Bkend/Backend
             aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
@@ -322,6 +326,7 @@ jobs:
             #     --code S3Bucket=lambdapackagedeploy, S3Key=function.zip \
             #     --region $AWS_DEFAULT_REGION
             # fi
+            cd ~/Bkend/Backend
             sam package --template-file restapitest.yml --output-template-file packaged.yml --s3-bucket lambdapackagedeploy
             sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM
 
@@ -419,14 +424,14 @@ workflows:
     #         paths:
     #           - Backend/**
     jobs:        
-      - backendbuild:
-          name: package lambda function
-          context: aws-credential-dev
-          filters:
-            branches:
-              only: main
-            tags:
-              only: Backend/**  
+      # - backendbuild:
+      #     name: package lambda function
+      #     context: aws-credential-dev
+      #     filters:
+      #       branches:
+      #         only: main
+      #       tags:
+      #         only: Backend/**  
       - backenddeploy:
           name: deploy-lambdafunction
           requires:
