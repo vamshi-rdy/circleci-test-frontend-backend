@@ -434,8 +434,8 @@ workflows:
       #         only: Backend/**  
       - backenddeploy:
           name: deploy-lambdafunction
-          requires:
-            - package lambda function
+          # requires:
+          #   - package lambda function
           context: aws-credential-dev
           filters:
             branches:
