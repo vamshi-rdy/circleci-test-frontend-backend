@@ -224,10 +224,10 @@ jobs:
             # zip function.zip Lambda.py
             pwd
             ls
-      - persist_to_workspace:
-          root: ~/Bkend/Backend
-          paths:
-            - function.zip      
+      # - persist_to_workspace:
+      #     root: ~/Bkend/Backend
+      #     paths:
+      #       - function.zip      
       # - run:
       #     name: Install AWS CLI
       #     command: pip install awscli
@@ -259,8 +259,8 @@ jobs:
       
     steps:
       # - checkout
-      - attach_workspace:
-          at: ~/Bkend/Backend
+      # - attach_workspace:
+      #     at: ~/Bkend/Backend
       - run:
           name: Install AWS CLI
           command: pip install awscli
