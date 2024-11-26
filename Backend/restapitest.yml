@@ -124,7 +124,7 @@ Resources:
       Code:
         S3Bucket: "test-api-circleci2"
         # S3Key: "packaged.ym"
-        S3Key: "packaged.zip"
+        # S3Key: "packaged.zip"
         S3Key: "function.zip"
       Handler: Lambda.lambda_handler
       Role: !GetAtt LambdaExecutionRole.Arn
