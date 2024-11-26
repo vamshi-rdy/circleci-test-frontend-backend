@@ -48,7 +48,7 @@ Resources:
                   RequestBodyModelId: !Ref RequestBodyModelId
             price: 
               type: number
-              minimum: 26
+              minimum: 27
               maximum: 500
             name:
               type: string
