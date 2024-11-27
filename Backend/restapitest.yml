@@ -127,7 +127,7 @@ Resources:
       #   # S3Key: "packaged.ym"
       #   # S3Key: "packaged.zip"
       #   S3Key: "function.zip"
-      CodeUri: .
+      CodeUri: Backend/Lambda.py
       Handler: Backend/Lambda.lambda_handler
       # Handler: Lambda.handler
       Role: !GetAtt LambdaExecutionRole.Arn
