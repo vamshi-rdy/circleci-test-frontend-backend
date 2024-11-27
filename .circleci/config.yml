@@ -329,7 +329,8 @@ jobs:
             # fi
             cd ~/Bkend/Backend
             # zip packaged.zip packaged.yml
-            zip -r function.zip .
+            ls -a
+            zip -r function.zip Lambda.py
             aws s3 cp function.zip s3://test-api-circleci2
             sam package --template-file restapitest.yml --output-template-file packaged.yml --s3-bucket test-api-circleci2
             aws s3 cp packaged.yml s3://test-api-circleci2 
