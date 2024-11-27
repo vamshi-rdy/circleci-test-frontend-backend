@@ -118,7 +118,7 @@ Resources:
   # CloudFormation creates a lambda function named <CloudFormationStackName-ResourceName-RandomChars>
   # Example: CreateLambdaFunction-TestLambdaFunction-N7S3FMXJ8Z8R
   TestLambdaFunction:
-    Type: AWS::Lambda::Function
+    Type: AWS::Serverless::Function
     Properties:
       FunctionName: lambda_handler2
       # Code:
@@ -126,7 +126,7 @@ Resources:
       #   # S3Key: "packaged.ym"
       #   # S3Key: "packaged.zip"
       #   S3Key: "function.zip"
-      CodeUri: .
+      CodeUri: Backend
       Handler: Backend/Lambda.lambda_handler
       # Handler: Lambda.handler
       Role: !GetAtt LambdaExecutionRole.Arn
