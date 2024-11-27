@@ -126,7 +126,7 @@ Resources:
         # S3Key: "packaged.ym"
         # S3Key: "packaged.zip"
         S3Key: "function.zip/Lambda.py"
-      Handler: Lambda.lambda_handler
+      Handler: Backend/Lambda.lambda_handler
       # Handler: Lambda.handler
       Role: !GetAtt LambdaExecutionRole.Arn
       Runtime: python3.12
