@@ -136,6 +136,11 @@ Resources:
       # -
       #   Key: "Documentation"
       #   Value: "Docbot"
+  LambdaFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      AuthType: NONE
+      TargetFunctionArn: !GetAtt TestLambdaFunction.Arn
 
   # Creates an execution role called <CloudFormationStackName-ResourceName-RandomChars>
   # Example: CreateLambdaFunction-LambdaExecutionRole-1TWFONVJX3VZQ
