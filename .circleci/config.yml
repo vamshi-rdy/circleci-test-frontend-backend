@@ -210,7 +210,7 @@ jobs:
             # pip install -r requirements.txt
             pip3 install -t dependencies -r requirements.txt
             cd dependencies; zip ../aws_lambda_artifact.zip -r .
-            zip aws_lambda_artifact.zip -u main.py
+            zip aws_lambda_artifact.zip -u Lambda.py
             pip install awscli
       - persist_to_workspace:
           root: ~/Bkend/Backend
