@@ -215,8 +215,8 @@ jobs:
       - persist_to_workspace:
           root: ~/Bkend/Backend
           paths:
-            # - venv
-            - aws_lambda_artifact.zip
+            - venv
+            # - aws_lambda_artifact.zip
       - run:
           name: package application
           command: |
@@ -440,18 +440,18 @@ workflows:
     #         paths:
     #           - Backend/**
     jobs:        
-      # - backendbuild:
-      #     name: package lambda function
-      #     context: aws-credential-dev
-      #     filters:
-      #       branches:
-      #         only: main
-      #       tags:
-      #         only: Backend/**  
+      - backendbuild:
+          name: package lambda function
+          context: aws-credential-dev
+          filters:
+            branches:
+              only: main
+            tags:
+              only: Backend/**  
       - backenddeploy:
           name: deploy-lambdafunction
-          # requires:
-          #   - package lambda function
+          requires:
+            - package lambda function
           context: aws-credential-dev
           filters:
             branches:
