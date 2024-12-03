@@ -208,8 +208,10 @@ jobs:
             python -m venv venv
             . venv/bin/activate
             # pip install -r requirements.txt
-            pip3 install -t dependencies -r requirements.txt
-            cd dependencies; zip ../aws_lambda_artifact.zip -r .
+            # pip3 install -t dependencies -r requirements.txt
+            pip3 install -r requirements.txt
+            # cd dependencies; zip ../aws_lambda_artifact.zip -r .
+            zip ../aws_lambda_artifact.zip -r .
             zip aws_lambda_artifact.zip -u Lambda.py
             pip install awscli
       - persist_to_workspace:
