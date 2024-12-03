@@ -215,7 +215,8 @@ jobs:
       - persist_to_workspace:
           root: ~/Bkend/Backend
           paths:
-            - venv
+            # - venv
+            - aws_lambda_artifact.zip
       - run:
           name: package application
           command: |
