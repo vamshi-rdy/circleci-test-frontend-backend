@@ -213,7 +213,7 @@ jobs:
             zip aws_lambda_artifact.zip -u main.py
             pip install awscli
       - persist_to_workspace:
-          root: ~/~/Bkend/Backend
+          root: ~/Bkend/Backend
           paths:
             - venv
       - run:
