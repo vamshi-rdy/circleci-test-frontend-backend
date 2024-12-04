@@ -216,8 +216,8 @@ jobs:
             # cd dependencies
             ls
             pwd
-            cd dependencies; zip ../aws_lambda_artifact.zip -r .
-            # zip ../aws_lambda_artifact.zip -r .
+            # cd dependencies; zip ../aws_lambda_artifact.zip -r .
+            zip ../aws_lambda_artifact.zip -r .
             zip aws_lambda_artifact.zip -u Lambda.py
             # zip aws_lambda_artifact.zip
             # pip install awscli
