@@ -223,16 +223,20 @@ jobs:
             zip ./aws_lambda_artifact.zip -r .
             pwd
             ls -a
+            cd venv
+            ls -a
             zip aws_lambda_artifact.zip -u Lambda.py
             pwd
-            ls -a
+            ls
+            cd venv
+            ls
             # zip aws_lambda_artifact.zip
             # pip install awscli
       - persist_to_workspace:
           root: ~/Bkend/Backend
           paths:
-            - venv
-            # - aws_lambda_artifact.zip
+            # - venv
+            - aws_lambda_artifact.zip
       - run:
           name: package application
           command: |
