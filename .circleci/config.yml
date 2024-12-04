@@ -293,6 +293,9 @@ jobs:
       - run:
           name: Install dependencies
           command: | 
+            cd ~/Bkend/Backend
+            python -m venv venv
+            . venv/bin/activate
             ls -a
             pwd
             mkdir package
