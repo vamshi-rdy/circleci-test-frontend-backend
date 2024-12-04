@@ -370,13 +370,14 @@ jobs:
             # zip packaged.zip packaged.yml
             ls -a
             pwd
+            ls
             # zip -r function.zip Lambda.py
             # aws s3 cp function.zip s3://test-api-circleci2
             # aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci2
+            aws s3 cp ./* s3://test-api-circleci2
             sam package --template-file restapitest.yml --output-template-file packaged.yml --s3-bucket test-api-circleci2
             ls -a
-            # aws s3 cp packaged.yml s3://test-api-circleci2
-            aws s3 cp ./* s3://test-api-circleci2
+            aws s3 cp packaged.yml s3://test-api-circleci2
             sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
             # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION
 
