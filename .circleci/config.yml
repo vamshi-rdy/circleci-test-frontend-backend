@@ -375,7 +375,10 @@ jobs:
             # zip -r function.zip Lambda.py
             # aws s3 cp function.zip s3://test-api-circleci2
             # aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci2
+            cd package
             zip ./aws_lambda_artifact.zip -r .
+            ls -a
+            pwd
             aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci2
             sam package --template-file restapitest.yml --output-template-file packaged.yml --s3-bucket test-api-circleci2
             ls -a
