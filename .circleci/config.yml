@@ -210,7 +210,8 @@ jobs:
             # pip install -r requirements.txt
             # mkdir dependencies
             pwd
-            pip3 install -t dependencies -r requirements.txt
+            # pip3 install -t dependencies -r requirements.txt
+            pip3 install requirements.txt
             ls -a
             pwd
             # cd dependencies
