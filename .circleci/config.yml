@@ -298,9 +298,10 @@ jobs:
             . venv/bin/activate
             ls -a
             pwd
-            mkdir package
-            pip3 install -r requirements.txt --target ./
+            # mkdir package
+            pip3 install -r requirements.txt -t package
             ls
+            pwd
       - run:
           name: Install AWS CLI
           command: |
@@ -374,7 +375,8 @@ jobs:
             # zip -r function.zip Lambda.py
             # aws s3 cp function.zip s3://test-api-circleci2
             # aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci2
-            aws s3 cp ./* s3://test-api-circleci2
+            zip ./aws_lambda_artifact.zip -r .
+            aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci2
             sam package --template-file restapitest.yml --output-template-file packaged.yml --s3-bucket test-api-circleci2
             ls -a
             aws s3 cp packaged.yml s3://test-api-circleci2
