@@ -210,15 +210,17 @@ jobs:
             # pip install -r requirements.txt
             # mkdir dependencies
             pwd
+            ls -a
             # pip3 install -t dependencies -r requirements.txt
             pip3 install -r requirements.txt
+            pwd
             ls -a
             pwd
             # cd dependencies
             ls
             pwd
             # cd dependencies; zip ../aws_lambda_artifact.zip -r .
-            zip ../aws_lambda_artifact.zip -r .
+            zip ./aws_lambda_artifact.zip -r .
             zip aws_lambda_artifact.zip -u Lambda.py
             # zip aws_lambda_artifact.zip
             # pip install awscli
