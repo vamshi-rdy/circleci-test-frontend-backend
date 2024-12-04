@@ -207,18 +207,18 @@ jobs:
             cd ~/Bkend/Backend
             python -m venv venv
             . venv/bin/activate
-            # pip install -r requirements.txt
-            # mkdir dependencies
-            pwd
+            # pip install -r requirements.txt   
             ls -a
-            # pip3 install -t dependencies -r requirements.txt
-            pip3 install -r requirements.txt
+            pwd
+            mkdir package
+            pip3 install -r requirements.txt --target ./
+            # pip3 install -r requirements.txt
             pwd
             ls -a
             pwd
             # cd dependencies
-            ls
-            pwd
+            # ls
+            # pwd
             # cd dependencies; zip ../aws_lambda_artifact.zip -r .
             zip ./aws_lambda_artifact.zip -r .
             pwd
@@ -288,8 +288,16 @@ jobs:
     steps:
       - checkout:
           path: ~/Bkend  
-      - attach_workspace:
-          at: ~/Bkend/Backend
+      # - attach_workspace:
+      #     at: ~/Bkend/Backend
+      - run:
+          name: Install dependencies
+          command: | 
+            ls -a
+            pwd
+            mkdir package
+            pip3 install -r requirements.txt --target ./
+            ls
       - run:
           name: Install AWS CLI
           command: |
@@ -460,18 +468,18 @@ workflows:
     #         paths:
     #           - Backend/**
     jobs:        
-      - backendbuild:
-          name: package lambda function
-          context: aws-credential-dev
-          filters:
-            branches:
-              only: main
-            tags:
-              only: Backend/**  
+      # - backendbuild:
+      #     name: package lambda function
+      #     context: aws-credential-dev
+      #     filters:
+      #       branches:
+      #         only: main
+      #       tags:
+      #         only: Backend/**  
       - backenddeploy:
           name: deploy-lambdafunction
-          requires:
-            - package lambda function
+          # requires:
+          #   - package lambda function
           context: aws-credential-dev
           filters:
             branches:
