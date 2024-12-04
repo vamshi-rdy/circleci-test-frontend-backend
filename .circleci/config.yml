@@ -211,7 +211,8 @@ jobs:
             pip3 install -r requirements.txt
             # cd dependencies; zip ../aws_lambda_artifact.zip -r .
             zip ../aws_lambda_artifact.zip -r .
-            zip aws_lambda_artifact.zip -u Lambda.py
+            # zip aws_lambda_artifact.zip -u Lambda.py
+            zip aws_lambda_artifact.zip
             pip install awscli
       - persist_to_workspace:
           root: ~/Bkend/Backend
@@ -346,7 +347,7 @@ jobs:
             ls -a
             aws s3 cp packaged.yml s3://test-api-circleci2 
             sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
-
+            aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION
 
 workflows:
   # Orchestrate our job run sequence
