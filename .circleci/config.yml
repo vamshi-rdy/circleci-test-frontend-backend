@@ -209,10 +209,14 @@ jobs:
             . venv/bin/activate
             # pip install -r requirements.txt
             # mkdir dependencies
+            pwd
             pip3 install -t dependencies -r requirements.txt
             ls -a
             pwd
-            (cd dependencies; zip ../aws_lambda_artifact.zip -r.)
+            cd dependencies
+            ls -a
+            pwd
+            cd dependencies; zip ../aws_lambda_artifact.zip -r .
             # zip ../aws_lambda_artifact.zip -r .
             zip aws_lambda_artifact.zip -u Lambda.py
             # zip aws_lambda_artifact.zip
