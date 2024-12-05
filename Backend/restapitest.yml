@@ -49,7 +49,7 @@ Resources:
                   RequestBodyModelId: !Ref RequestBodyModelId
             price: 
               type: number
-              minimum: 27
+              minimum: 26
               maximum: 500
             name:
               type: string
@@ -137,6 +137,7 @@ Resources:
       # -
       #   Key: "Documentation"
       #   Value: "Docbot"
+      
   LambdaFunctionUrl:
     Type: AWS::Lambda::Url
     Properties:
