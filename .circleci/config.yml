@@ -376,6 +376,7 @@ jobs:
             # aws s3 cp function.zip s3://test-api-circleci2
             # aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci2
             cd package
+            ls -a
             zip ./aws_lambda_artifact.zip -r .
             ls -a
             pwd
