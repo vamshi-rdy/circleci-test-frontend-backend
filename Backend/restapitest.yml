@@ -129,8 +129,8 @@ Resources:
       #   S3Key: "function.zip"
       # CodeUri: Lambda.py
       CodeUri: s3://test-api-circleci2/aws_lambda_artifact.zip
-      Handler: Backend/Lambda.lambda_handler
-      # Handler: Lambda.handler
+      # Handler: Backend/Lambda.lambda_handler
+      Handler: Lambda.handler
       Role: !GetAtt LambdaExecutionRole.Arn
       Runtime: python3.12
       # Tags:
