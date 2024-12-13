@@ -5,6 +5,9 @@ Parameters:
     Type: String
     Default: v1
     Description: Name of API stage.
+  codeuris3bucketname:
+    Type: String
+    Description: codeuri bucket    
 Resources:
   Api:
     Type: 'AWS::ApiGateway::RestApi'
@@ -128,7 +131,7 @@ Resources:
       #   # S3Key: "packaged.zip"
       #   S3Key: "function.zip"
       # CodeUri: Lambda.py
-      CodeUri: s3://test-api-circleci2/aws_lambda_artifact.zip
+      CodeUri: !Sub 's3://${codeuris3bucketname}/aws_lambda_artifact.zip'
       # Handler: Backend/Lambda.lambda_handler
       Handler: Lambda.handler
       Role: !GetAtt LambdaExecutionRole.Arn
