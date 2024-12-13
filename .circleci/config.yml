@@ -402,7 +402,7 @@ jobs:
             ls -a
             aws s3 cp packaged.yml s3://test-api-circleci2
             sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
-            # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION --parameter-overrides codeuris3bucketname=<<parameters.codeuris3>
+            # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION --parameter-overrides codeuris3bucketname=<<parameters.codeuris3>>
 
 workflows:
   # Orchestrate our job run sequence
