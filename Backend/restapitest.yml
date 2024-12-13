@@ -5,7 +5,7 @@ Parameters:
     Type: String
     Default: v1
     Description: Name of API stage.
-  codeuris3bucketname:
+  Codeuris3bucketname:
     Type: String
     Description: codeuri bucket
     AllowedValues:
