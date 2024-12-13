@@ -11,6 +11,7 @@ Parameters:
     AllowedValues:
       - test-api-circleci2
       - uideploy
+    Default: "test-api-circleci2"  
 Resources:
   Api:
     Type: 'AWS::ApiGateway::RestApi'
