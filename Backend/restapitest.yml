@@ -7,7 +7,10 @@ Parameters:
     Description: Name of API stage.
   codeuris3bucketname:
     Type: String
-    Description: codeuri bucket    
+    Description: codeuri bucket
+    AllowedValues:
+      - test-api-circleci2
+      - uideploy
 Resources:
   Api:
     Type: 'AWS::ApiGateway::RestApi'
