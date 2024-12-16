@@ -278,8 +278,10 @@ jobs:
     docker:
       - image: circleci/python:3.8
     parameters:
-      # codeuris3:
-      #   type: string
+      codeuris3:
+        type: string
+      codeurikey:
+        type: string
       # s3-bucket-name:
       #   type: string
       #   default: test-api-circleci
@@ -401,7 +403,7 @@ jobs:
             pwd
             ls -a
             aws s3 cp packaged.yml s3://test-api-circleci2
-            sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Codeuris3bucketname=test-api-circleci2 codeuris3key=aws_lambda_artifact.zip
+            sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Codeuris3bucketname=<<parameters.codeuris3>> codeuris3key=<<parameters.codeurikey>>
             # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION --parameter-overrides codeuris3bucketname=<<parameters.codeuris3>>
 
 workflows:
@@ -510,7 +512,8 @@ workflows:
           # requires:
           #   - package lambda function
           context: aws-credential-dev
-          # codeuris3: $codeuribucket
+          codeuris3: test-api-circleci2 
+          codeurikey: aws_lambda_artifact.zip 
           filters:
             branches:
               only: main
