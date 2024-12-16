@@ -8,10 +8,13 @@ Parameters:
   Codeuris3bucketname:
     Type: String
     Description: codeuri bucket
-    AllowedValues:
-      - test-api-circleci2
-      - uideploy
-    Default: "test-api-circleci2"  
+    # AllowedValues:
+    #   - test-api-circleci2
+    #   - uideploy
+    Default: test-api-circleci2
+  codeuris3key:
+    Type: String
+    Description: s3 key for codeuri deployment
 Resources:
   Api:
     Type: 'AWS::ApiGateway::RestApi'
@@ -135,7 +138,7 @@ Resources:
       #   # S3Key: "packaged.zip"
       #   S3Key: "function.zip"
       # CodeUri: Lambda.py
-      CodeUri: !Sub 's3://${Codeuris3bucketname}/aws_lambda_artifact.zip'
+      CodeUri: !Sub 's3://${Codeuris3bucketname}/${codeuris3key}'
       # Handler: Backend/Lambda.lambda_handler
       Handler: Lambda.handler
       Role: !GetAtt LambdaExecutionRole.Arn
