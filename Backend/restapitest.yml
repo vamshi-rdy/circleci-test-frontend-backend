@@ -131,7 +131,7 @@ Resources:
   #   Properties:
   #     RestApiId: !Ref Api
   #     StageName: 'dev'
-  StageDeployment:
+  APIDeployment:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
       - ValidationMethodGet
@@ -144,7 +144,7 @@ Resources:
     Properties:
       StageName: dev
       RestApiId: !Ref RestApi
-      DeploymentId: !Ref StageDeployment
+      DeploymentId: !Ref APIDeployment
       MethodSettings:
         - ResourcePath: "/*"
           HttpMethod: "*"
@@ -157,7 +157,7 @@ Resources:
     Properties:
       StageName: staging
       RestApiId: !Ref RestApi
-      DeploymentId: !Ref StageDeployment
+      DeploymentId: !Ref APIDeployment
       MethodSettings:
         - ResourcePath: "/*"
           HttpMethod: "*"
