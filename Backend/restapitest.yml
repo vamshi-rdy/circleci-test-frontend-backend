@@ -239,8 +239,8 @@ Resources:
         - TestLambdaFunction
         - Arn
       Principal: apigateway.amazonaws.com    
-Outputs:
-  ApiRootUrl:
-    Description: Root Url of the API
-    Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${StageName}'
+# Outputs:
+#   ApiRootUrl:
+#     Description: Root Url of the API
+#     Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${StageName}'
     
