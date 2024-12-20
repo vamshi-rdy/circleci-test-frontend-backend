@@ -443,11 +443,11 @@ jobs:
   backenddeploystaging:
     docker:
       - image: circleci/python:3.8
-    parameters:
-      codeuris3:
-        type: string
-      codeurikey:
-        type: string      
+    # parameters:
+    #   codeuris3:
+    #     type: string
+    #   codeurikey:
+    #     type: string      
     steps:
       - checkout:
           path: ~/Bkend  
