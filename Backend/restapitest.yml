@@ -138,20 +138,20 @@ Resources:
       - RequestBodyModel 
     Properties:
       RestApiId: !Ref Api
-      StageName: !Ref Environment
-  ApiStage:
-    Type: 'AWS::ApiGateway::Stage'
-    Properties:
-      StageName: dev
-      RestApiId: !Ref RestApi
-      DeploymentId: !Ref APIDeployment
-      MethodSettings:
-        - ResourcePath: "/*"
-          HttpMethod: "*"
-          ThrottlingBurstLimit: 110
-          ThrottlingRateLimit: 100
-      Variables:
-        LambdaAlias: dev
+      StageName: staging
+  # ApiStage:
+  #   Type: 'AWS::ApiGateway::Stage'
+  #   Properties:
+  #     StageName: dev
+  #     RestApiId: !Ref RestApi
+  #     DeploymentId: !Ref APIDeployment
+  #     MethodSettings:
+  #       - ResourcePath: "/*"
+  #         HttpMethod: "*"
+  #         ThrottlingBurstLimit: 110
+  #         ThrottlingRateLimit: 100
+  #     Variables:
+  #       LambdaAlias: dev
   StageStage:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
