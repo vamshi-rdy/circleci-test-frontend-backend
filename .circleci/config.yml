@@ -405,6 +405,154 @@ jobs:
             aws s3 cp packaged.yml s3://test-api-circleci2
             sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Codeuris3bucketname=<<parameters.codeuris3>> codeuris3key=<<parameters.codeurikey>>
             # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION --parameter-overrides codeuris3bucketname=<<parameters.codeuris3>>
+backendbuildstaging:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout:
+          path: ~/Bkend
+      - run:
+          name: Install dependencies
+          command: |
+            pwd
+            ls -a
+            # cd ~/project
+            # pwd
+            # ls
+            # cd Backend
+            # pwd
+            # ls
+            cd ~/Bkend/Backend
+            python -m venv venv
+            . venv/bin/activate
+            # pip install -r requirements.txt   
+            ls -a
+            pwd
+            mkdir package
+            pip3 install -r requirements.txt --target ./
+            # pip3 install -r requirements.txt
+            pwd
+            ls -a
+            pwd
+            # cd dependencies
+            # ls
+            # pwd
+            # cd dependencies; zip ../aws_lambda_artifact.zip -r .
+            zip ./aws_lambda_artifact.zip -r .
+            pwd
+            ls -a
+            # cd venv
+            # ls -a
+            zip aws_lambda_artifact.zip -u Lambda.py
+            pwd
+            ls
+            # cd venv
+            # ls
+            # zip aws_lambda_artifact.zip
+            # pip install awscli
+      - persist_to_workspace:
+          root: ~/Bkend/Backend
+          paths:
+            # - venv
+            - aws_lambda_artifact.zip
+      - run:
+          name: package application
+          command: |
+            # . venv/bin/activate
+            pwd
+            ls
+            # cd ~/project
+            pwd
+            ls -a
+            # cd ~/Bkend/Backend
+            pwd
+            ls
+            # zip function.zip Lambda.py
+            pwd
+            ls            
+  backenddeploystaging:
+    docker:
+      - image: circleci/python:3.8
+    parameters:
+      codeuris3:
+        type: string
+      codeurikey:
+        type: string      
+    steps:
+      - checkout:
+          path: ~/Bkend  
+      # - attach_workspace:
+      #     at: ~/Bkend/Backend
+      - run:
+          name: Install dependencies
+          command: | 
+            cd ~/Bkend/Backend
+            python -m venv venv
+            . venv/bin/activate
+            ls -a
+            pwd
+            # mkdir package
+            pip3 install -r requirements.txt -t package
+            ls
+            pwd
+      - run:
+          name: Install AWS CLI
+          command: |
+            cd ~/Bkend/Backend
+            pip install awscli
+      - run:
+          name: Install AWS SAM CLI
+          command: |
+            cd ~/Bkend/Backend
+            pip install aws-sam-cli
+      - run:
+          name: configure AWS credentials
+          command: |
+            cd ~/Bkend/Backend
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region $AWS_DEFAULT_REGION
+      - run:
+          name: verifying working directory
+          command: |
+            pwd
+            ls -la
+      - run:
+          name: Deploy lambda function
+          command: |
+            cd ~/Bkend/Backend
+            # zip packaged.zip packaged.yml
+            ls -a
+            pwd
+            ls
+            cd package
+            ls -a
+            zip ./aws_lambda_artifact.zip -r .
+            ls -a
+            pwd
+            ls -a
+            # aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci2
+            cd ..
+            ls -a
+            pwd
+            ls -a
+            mv Lambda.py package
+            cd package
+            pwd
+            ls -a
+            pwd
+            zip aws_lambda_artifact.zip -u Lambda.py
+            aws s3 cp aws_lambda_artifact.zip s3://test-api-circleci
+            pwd
+            cd ..
+            sam package --template-file restapitest.yml --output-template-file packaged.yml --s3-bucket test-api-circleci
+            ls -a
+            pwd
+            ls -a
+            aws s3 cp packaged.yml s3://test-api-circleci
+            sam deploy --template-file packaged.yml --stack-name teststack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Codeuris3bucketname=test-api-circleci codeuris3key=aws_lambda_artifact.zip Environment=staging
+            # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION --parameter-overrides codeuris3bucketname=<<parameters.codeuris3>>
+            
 
 workflows:
   # Orchestrate our job run sequence
@@ -519,5 +667,17 @@ workflows:
               only: main
             tags:
               only: Backend/**
+      - backenddeploystaging:
+          name: deploy-lambdafunction2
+          # requires:
+          #   - package lambda function
+          context: aws-credential-staging
+          # codeuris3: test-api-circleci2 
+          # codeurikey: aws_lambda_artifact.zip 
+          filters:
+            branches:
+              only: testapi
+            tags:
+              only: Backend/**        
                                 
               
