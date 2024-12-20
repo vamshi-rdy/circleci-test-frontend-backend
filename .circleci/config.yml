@@ -339,37 +339,7 @@ jobs:
             ls -la
       - run:
           name: Deploy lambda function
-          command: |
-            # zip function.zip Lambda.py     
-            # pwd
-            # ls
-            # cd ~/Frontend
-            # pwd
-            # ls
-            # if aws lambda get-function --function-name lambda_handler; then
-            #   aws lambda update-function-code --function-name lambda_handler --zip-file fileb://function.zip --region $AWS_DEFAULT_REGION
-            # else
-            #   aws lambda create-function --function-name lambda_handler \
-            #     --zip-file fileb://function.zip \
-            #     --handler lambda_function.lambda_handler \
-            #     --runtime python3.8 \
-            #     --role arn:aws:iam::992382428282:role/lambdadeploytest \
-            #     --code S3Bucket=lambdapackagedeploy
-            #     --region $AWS_DEFAULT_REGION
-            # fi
-            # if aws lambda get-function --function-name lambda_handler; then
-            #    aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdapackagedeploy --s3-key function.zip --region $AWS_DEFAULT_REGION
-            #  # aws lambda update-function-code --function-name lambda_handler --s3-bucket lambdapackagedeploy --region $AWS_DEFAULT_REGION
-            # else
-            #   aws lambda create-function --function-name lambda_handler \
-            #     --zip-file fileb://function.zip \
-            #     --handler lambda_function.lambda_handler \
-            #     --runtime python3.8 \
-            #     --role arn:aws:iam::216989128744:role/lambdadeploytest \
-            #     # --code S3Bucket=lambdapackagedeploy
-            #     --code S3Bucket=lambdapackagedeploy, S3Key=function.zip \
-            #     --region $AWS_DEFAULT_REGION
-            # fi
+          command: | 
             cd ~/Bkend/Backend
             # zip packaged.zip packaged.yml
             ls -a
@@ -405,7 +375,7 @@ jobs:
             aws s3 cp packaged.yml s3://test-api-circleci2
             sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Codeuris3bucketname=<<parameters.codeuris3>> codeuris3key=<<parameters.codeurikey>>
             # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION --parameter-overrides codeuris3bucketname=<<parameters.codeuris3>>
-backendbuildstaging:
+  backendbuildstaging:
     docker:
       - image: circleci/python:3.8
     steps:
@@ -470,7 +440,7 @@ backendbuildstaging:
             # zip function.zip Lambda.py
             pwd
             ls            
-backenddeploystaging:
+  backenddeploystaging:
     docker:
       - image: circleci/python:3.8
     parameters:
@@ -594,51 +564,7 @@ workflows:
               only: main
             tags:
               ignore:
-                - Backend/**  
-      # - build:
-      #     name: build-staging
-      #     # env: $Build_ENV2
-      #     context: aws-credential-staging
-      #     filters:
-      #       branches:
-      #         only: staging
-      #     requires:
-      #       - install_dependencies
-      # - create_update_s3_bucket_staging:
-      #     requires:
-      #       - build-staging
-      #     context: aws-credentials-staging  
-      #     filters:
-      #       branches:
-      #         only: staging  
-      # - deploy:
-      #     name: deploy-staging
-      #     requires:
-      #       - build-staging
-      #     context: aws-credentials-staging
-      #     s3-bucket-name: $stagingbucket
-          # filters:
-          #   branches:
-          #     only: staging
-              
-              
-      # - build:
-      #     name: build-prod
-      #     env: prod
-      #     context: aws-credential-prod
-      #     filters:
-      #       branches:
-      #         only: prod
-      #     requires:
-      #       - install_dependencies
-      # - deploy:
-      #     name: deploy-prod
-      #     requires:
-      #       - build-prod
-      #     context: aws-credentials-prod
-      #     filters:
-      #       branches:
-      #         only: prod
+                - Backend/** 
   backend_workflow: 
     # when:
     #   and:
@@ -668,7 +594,7 @@ workflows:
             tags:
               only: Backend/**
       - backenddeploystaging:
-          name: deploy-lambdafunction
+          name: deploy-lambdafunction2
           # requires:
           #   - package lambda function
           context: aws-credential-staging
