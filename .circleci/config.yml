@@ -518,7 +518,7 @@ backenddeploystaging:
             pwd
             ls -la
       - run:
-          name: Deploy lambda function
+          name: Deploy lambda function2
           command: |
             cd ~/Bkend/Backend
             # zip packaged.zip packaged.yml
@@ -668,7 +668,7 @@ workflows:
             tags:
               only: Backend/**
       - backenddeploystaging:
-          name: deploy-lambdafunction2
+          name: Deploy lambda function2
           # requires:
           #   - package lambda function
           context: aws-credential-staging
