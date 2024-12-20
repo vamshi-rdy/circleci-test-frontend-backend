@@ -373,7 +373,7 @@ jobs:
             pwd
             ls -a
             aws s3 cp packaged.yml s3://test-api-circleci2
-            sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Codeuris3bucketname=<<parameters.codeuris3>> codeuris3key=<<parameters.codeurikey>>
+            sam deploy --template-file packaged.yml --stack-name backendstack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --parameter-overrides Codeuris3bucketname=<<parameters.codeuris3>> codeuris3key=<<parameters.codeurikey>> Environment=dev
             # aws lambda update-function-code --function-name lambda_handler2 --s3-bucket test-api-circleci --region $AWS_DEFAULT_REGION --parameter-overrides codeuris3bucketname=<<parameters.codeuris3>>
   backendbuildstaging:
     docker:
