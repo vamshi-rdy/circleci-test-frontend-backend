@@ -146,7 +146,7 @@ Resources:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
       # StageName: !Sub "${Environment}-stage"
-      StageName: !Sub "staging-${AWS::StackName}-${AWS::timestamp}"
+      StageName: !Sub "staging-${AWS::StackName}"
       RestApiId: !Ref MyApi
       DeploymentId: !Ref APIDeployment
       MethodSettings:
