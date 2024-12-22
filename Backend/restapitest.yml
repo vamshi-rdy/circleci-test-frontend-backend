@@ -10,6 +10,9 @@ Parameters:
     AllowedValues:
       - dev
       - staging
+  ApiGatewayName:
+    Type: String
+    Default: ReqValidatorsSample    
   Codeuris3bucketname:
     Type: String
     Description: codeuri bucket
@@ -25,12 +28,12 @@ Resources:
   Api:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: !Sub "ReqValidatorsSample-${Environment}"
-  RestApi:
-    Type: AWS::ApiGateway::RestApi
-    Properties:
-      Description: My Rest API
-      Name: !Sub "Myapi-${Environment}"    
+      Name: !Sub "${ApiGatewayName}-${Environment}"
+  # RestApi:
+  #   Type: AWS::ApiGateway::RestApi
+  #   Properties:
+  #     Description: My Rest API
+  #     Name: !Sub "Myapi-${Environment}"    
   RequestBodyModelId:
     Type: 'AWS::ApiGateway::Model'
     Properties:
@@ -138,11 +141,24 @@ Resources:
       - RequestBodyModel 
     Properties:
       RestApiId: !Ref Api
-      StageName: staging
-  # ApiStage:
+      StageName: !Ref Environment
+  ApiStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      StageName: !Ref Environment
+      RestApiId: !Ref Api
+      DeploymentId: !Ref APIDeployment
+      MethodSettings:
+        - ResourcePath: "/*"
+          HttpMethod: "*"
+          ThrottlingBurstLimit: 110
+          ThrottlingRateLimit: 100
+  #     Variables:
+  #       LambdaAlias: dev
+  # StageStage:
   #   Type: 'AWS::ApiGateway::Stage'
   #   Properties:
-  #     StageName: dev
+  #     StageName: staging
   #     RestApiId: !Ref RestApi
   #     DeploymentId: !Ref APIDeployment
   #     MethodSettings:
@@ -151,20 +167,7 @@ Resources:
   #         ThrottlingBurstLimit: 110
   #         ThrottlingRateLimit: 100
   #     Variables:
-  #       LambdaAlias: dev
-  StageStage:
-    Type: 'AWS::ApiGateway::Stage'
-    Properties:
-      StageName: staging
-      RestApiId: !Ref RestApi
-      DeploymentId: !Ref APIDeployment
-      MethodSettings:
-        - ResourcePath: "/*"
-          HttpMethod: "*"
-          ThrottlingBurstLimit: 110
-          ThrottlingRateLimit: 100
-      Variables:
-        LambdaAlias: staging      
+  #       LambdaAlias: staging      
       
   # CloudFormation creates a lambda function named <CloudFormationStackName-ResourceName-RandomChars>
   # Example: CreateLambdaFunction-TestLambdaFunction-N7S3FMXJ8Z8R
