@@ -139,10 +139,9 @@ Resources:
     DependsOn:
       - ValidationMethodGet
       - RequestBodyModel
-      - ApiStage
     Properties:
       RestApiId: !Ref MyApi
-      StageName: !Sub "${Environment}-stage"
+      StageName: !Ref ApiStage
   ApiStage:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
