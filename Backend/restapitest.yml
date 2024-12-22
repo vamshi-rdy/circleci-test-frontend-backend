@@ -25,7 +25,7 @@ Parameters:
     Description: s3 key for codeuri deployment
     Default: aws_lambda_artifact.zip
 Resources:
-  Api:
+  MyApi:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: !Sub "${ApiGatewayName}-${Environment}"
@@ -37,7 +37,7 @@ Resources:
   RequestBodyModelId:
     Type: 'AWS::ApiGateway::Model'
     Properties:
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       ContentType: application/json
       Description: Request body model for Pet ID.
       Schema:
@@ -49,7 +49,7 @@ Resources:
   RequestBodyModel: 
     Type: 'AWS::ApiGateway::Model'
     Properties:
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       ContentType: application/json
       Description: Request body model for Pet type, name, price, and ID.
       Schema:
@@ -63,8 +63,8 @@ Resources:
         properties:
             id:
               "$ref": !Sub 
-                - 'https://apigateway.amazonaws.com/restapis/${Api}/models/${RequestBodyModelId}'
-                - Api: !Ref Api
+                - 'https://apigateway.amazonaws.com/restapis/${MyApi}/models/${RequestBodyModelId}'
+                - Api: !Ref MyApi
                   RequestBodyModelId: !Ref RequestBodyModelId
             price: 
               type: number
@@ -82,26 +82,26 @@ Resources:
     Type: AWS::ApiGateway::RequestValidator
     Properties:
       Name: params-only
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       ValidateRequestBody: False
       ValidateRequestParameters: True 
   POSTValidator:
     Type: AWS::ApiGateway::RequestValidator
     Properties:
       Name: body-only
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       ValidateRequestBody: True
       ValidateRequestParameters: False
   ValidationResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      RestApiId: !Ref Api
-      ParentId: !GetAtt Api.RootResourceId
+      RestApiId: !Ref MyApi
+      ParentId: !GetAtt MyApi.RootResourceId
       PathPart: 'validation'
   ValidationMethodGet:
     Type: 'AWS::ApiGateway::Method'
     Properties:
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       ResourceId: !Ref ValidationResource
       HttpMethod: GET
       AuthorizationType: NONE
@@ -115,7 +115,7 @@ Resources:
   ValidationMethodPost:
     Type: 'AWS::ApiGateway::Method'
     Properties:
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       ResourceId: !Ref ValidationResource
       HttpMethod: POST
       AuthorizationType: NONE
@@ -132,7 +132,7 @@ Resources:
   #     - ValidationMethodGet
   #     - RequestBodyModel 
   #   Properties:
-  #     RestApiId: !Ref Api
+  #     RestApiId: !Ref MyApi
   #     StageName: 'dev'
   APIDeployment:
     Type: 'AWS::ApiGateway::Deployment'
@@ -140,13 +140,13 @@ Resources:
       - ValidationMethodGet
       - RequestBodyModel 
     Properties:
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       StageName: !Ref Environment
   ApiStage:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
       StageName: !Ref Environment
-      RestApiId: !Ref Api
+      RestApiId: !Ref MyApi
       DeploymentId: !Ref APIDeployment
       MethodSettings:
         - ResourcePath: "/*"
