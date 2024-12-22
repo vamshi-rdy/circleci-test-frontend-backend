@@ -126,29 +126,20 @@ Resources:
         Type: HTTP_PROXY
         IntegrationHttpMethod: POST
         Uri: http://petstore-demo-endpoint.execute-api.com/petstore/pets/
-  # ApiDeployment:
-  #   Type: 'AWS::ApiGateway::Deployment'
-  #   DependsOn:
-  #     - ValidationMethodGet
-  #     - RequestBodyModel 
-  #   Properties:
-  #     RestApiId: !Ref Api
-  #     StageName: 'dev'
-  # APIDeployment:
-  #   Type: 'AWS::ApiGateway::Deployment'
-  #   DependsOn:
-  #     - ValidationMethodGet
-  #     - RequestBodyModel 
-  #   Properties:
-  #     RestApiId: !Ref Api
-  #     StageName: !Ref Environment
+  APIDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    DependsOn:
+      - ValidationMethodGet
+      - RequestBodyModel 
+    Properties:
+      RestApiId: !Ref Api
+      StageName: !Ref Environment
   ApiStage:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
       StageName: !Ref Environment
       RestApiId: !Ref Api
-      # DeploymentId: !Ref APIDeployment
-      AutoDeploy: true
+      DeploymentId: !Ref APIDeployment
       MethodSettings:
         - ResourcePath: "/*"
           HttpMethod: "*"
