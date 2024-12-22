@@ -10,6 +10,9 @@ Parameters:
     AllowedValues:
       - dev
       - staging
+  ApiGatewayName:
+    Type: String
+    Default: ReqValidatorsSample
   Codeuris3bucketname:
     Type: String
     Description: codeuri bucket
@@ -25,7 +28,7 @@ Resources:
   Api:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: !Sub "ReqValidatorsSample-${Environment}"
+      Name: !Sub "${ApiGatewayName}-${Environment}"
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -131,20 +134,21 @@ Resources:
   #   Properties:
   #     RestApiId: !Ref Api
   #     StageName: 'dev'
-  APIDeployment:
-    Type: 'AWS::ApiGateway::Deployment'
-    DependsOn:
-      - ValidationMethodGet
-      - RequestBodyModel 
-    Properties:
-      RestApiId: !Ref Api
-      StageName: dev
+  # APIDeployment:
+  #   Type: 'AWS::ApiGateway::Deployment'
+  #   DependsOn:
+  #     - ValidationMethodGet
+  #     - RequestBodyModel 
+  #   Properties:
+  #     RestApiId: !Ref Api
+  #     StageName: !Ref Environment
   ApiStage:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
-      StageName: dev
-      RestApiId: !Ref RestApi
-      DeploymentId: !Ref APIDeployment
+      StageName: !Ref Environment
+      RestApiId: !Ref Api
+      # DeploymentId: !Ref APIDeployment
+      AutoDeploy: true
       MethodSettings:
         - ResourcePath: "/*"
           HttpMethod: "*"
@@ -152,19 +156,19 @@ Resources:
           ThrottlingRateLimit: 100
       Variables:
         LambdaAlias: dev
-  StageStage:
-    Type: 'AWS::ApiGateway::Stage'
-    Properties:
-      StageName: staging
-      RestApiId: !Ref RestApi
-      DeploymentId: !Ref APIDeployment
-      MethodSettings:
-        - ResourcePath: "/*"
-          HttpMethod: "*"
-          ThrottlingBurstLimit: 110
-          ThrottlingRateLimit: 100
-      Variables:
-        LambdaAlias: staging      
+  # StageStage:
+  #   Type: 'AWS::ApiGateway::Stage'
+  #   Properties:
+  #     StageName: staging
+  #     RestApiId: !Ref RestApi
+  #     DeploymentId: !Ref APIDeployment
+  #     MethodSettings:
+  #       - ResourcePath: "/*"
+  #         HttpMethod: "*"
+  #         ThrottlingBurstLimit: 110
+  #         ThrottlingRateLimit: 100
+  #     Variables:
+  #       LambdaAlias: staging      
       
   # CloudFormation creates a lambda function named <CloudFormationStackName-ResourceName-RandomChars>
   # Example: CreateLambdaFunction-TestLambdaFunction-N7S3FMXJ8Z8R
