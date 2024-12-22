@@ -141,11 +141,11 @@ Resources:
       - RequestBodyModel 
     Properties:
       RestApiId: !Ref MyApi
-      StageName: !Ref Environment
+      StageName: !Sub "${Environment}-stage"
   ApiStage:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
-      StageName: !Ref Environment
+      StageName: !Sub "${Environment}-stage"
       RestApiId: !Ref MyApi
       DeploymentId: !Ref APIDeployment
       MethodSettings:
